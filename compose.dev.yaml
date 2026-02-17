@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:8.2.5-noble
+    container_name: valora-mongo-dev
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data-dev:/data/db # Volume persistente para não perder dados ao reiniciar
+
+  # Interface Visual
+  mongo-express:
+    image: mongo-express
+    container_name: valora-mongo-ui
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data-dev:

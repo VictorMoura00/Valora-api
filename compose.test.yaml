@@ -1,0 +1,6 @@
+services:
+  mongo-test:
+    image: mongo:8.2.5-noble
+    container_name: valora-mongo-test
+    ports:
+      - "27018:27017"

@@ -1,0 +1,43 @@
+﻿services:
+  # 1. Sua API .NET
+  valora.api:
+    image: valora.api
+    build:
+      context: .
+      dockerfile: Valora.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      # Conexão apontando para o serviço 'mongo' definido abaixo
+      - MongoSettings__ConnectionString=mongodb://mongo:27017
+      - MongoSettings__DatabaseName=ValoraDB
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+
+  # 2. O Banco de Dados MongoDB (Versão 8.2.5 no Ubuntu Noble)
+  mongo:
+    image: mongo:8.2.5-noble
+    container_name: valora-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # 3. Interface Visual (Mongo Express)
+  mongo-express:
+    image: mongo-express
+    container_name: valora-mongo-ui
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_BASICAUTH=false # Opcional: remove login/senha do painel para dev local
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
