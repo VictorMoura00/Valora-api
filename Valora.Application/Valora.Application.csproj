@@ -8,12 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Dtos\" />
-      <Folder Include="Interfaces\" />
-      <Folder Include="Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Valora.Domain\Valora.Domain.csproj" />
     </ItemGroup>
 

@@ -28,3 +28,4 @@
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Infra/obj/Debug/net10.0/refint/Valora.Infra.dll
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Infra/obj/Debug/net10.0/Valora.Infra.pdb
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Infra/obj/Debug/net10.0/ref/Valora.Infra.dll
+/var/home/apollo11zz/projetos/dotnet/Valora/Valora.Infra/obj/Debug/net10.0/Valora.Infra.sourcelink.json

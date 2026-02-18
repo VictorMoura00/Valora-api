@@ -28,3 +28,4 @@
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Application/obj/Debug/net10.0/refint/Valora.Application.dll
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Application/obj/Debug/net10.0/Valora.Application.pdb
 /var/home/apollo11zz/projetos/dotnet/Valora/Valora.Application/obj/Debug/net10.0/ref/Valora.Application.dll
+/var/home/apollo11zz/projetos/dotnet/Valora/Valora.Application/obj/Debug/net10.0/Valora.Application.sourcelink.json

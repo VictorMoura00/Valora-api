@@ -1,6 +1,6 @@
 using Valora.Domain.Common.Abstractions;
 
-namespace Valora.Domain.Repositories;
+namespace Valora.Domain.Common.Interfaces;
 
 public interface IRepository<T> where T : IAggregateRoot
 {

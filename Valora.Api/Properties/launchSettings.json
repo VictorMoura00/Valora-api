@@ -1,20 +1,21 @@
 ﻿{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "http": {
+    "Valora.Api (HTTPS)": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5256",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7043;http://localhost:5256",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "https": {
+    "Valora.Api (HTTP Only)": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:7043;http://localhost:5256",
+      "applicationUrl": "http://localhost:5256",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -11,6 +11,7 @@ builder.Services.AddMongoDb(builder.Configuration);             // Conexão e Co
 builder.Services.AddGlobalErrorHandler();                       // Tratamento de Erros
 builder.Services.AddHealthMonitoring();                         // Health Checks
 builder.Services.AddProjectDependencies();                      // Mapeiamento automatico de implementação de interface
+builder.Services.AddApplication();                              // MediatR, Behaviors e Validators
 builder.Services.AddCorsPolicy(builder.Configuration);          // Cors
 
 var app = builder.Build();
@@ -22,7 +23,9 @@ app.UseHealthMonitoring();   // Endpoint /health
 
 //app.UseHttpsRedirection();
 app.UseCorsPolicy();
+//app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseStartupLog();
 
 app.Run();
