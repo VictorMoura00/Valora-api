@@ -1,14 +1,34 @@
 namespace Valora.Domain.Common.Results;
 
+/// <summary>
+/// Representa o resultado de uma operação que não retorna valor (void).
+/// Indica se a operação foi bem-sucedida ou falhou, contendo o erro associado em caso de falha.
+/// </summary>
 public class Result
 {
+    /// <summary>
+    /// Indica se a operação foi concluída com sucesso.
+    /// </summary>
     public bool IsSuccess { get; }
+
+    /// <summary>
+    /// Indica se a operação falhou.
+    /// </summary>
     public bool IsFailure => !IsSuccess;
+
+    /// <summary>
+    /// Obtém o erro associado à falha. Retorna <see cref="Error.None"/> se for sucesso.
+    /// </summary>
     public Error Error { get; }
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="Result"/>.
+    /// </summary>
+    /// <param name="isSuccess">Estado de sucesso da operação.</param>
+    /// <param name="error">Erro associado (deve ser <see cref="Error.None"/> se sucesso).</param>
+    /// <exception cref="InvalidOperationException">Lançada se o estado for inconsistente (Sucesso com Erro ou Falha sem Erro).</exception>
     protected Result(bool isSuccess, Error error)
     {
-        // Validação defensiva
         if (isSuccess && error != Error.None)
         {
             throw new InvalidOperationException("Um resultado de sucesso não pode conter um erro.");
@@ -23,11 +43,28 @@ public class Result
         Error = error;
     }
 
-    // Fábricas para resultados sem valor (Void)
+    /// <summary>
+    /// Cria uma instância representando uma operação bem-sucedida.
+    /// </summary>
     public static Result Success() => new(true, Error.None);
+
+    /// <summary>
+    /// Cria uma instância representando uma falha.
+    /// </summary>
+    /// <param name="error">O erro que descreve a falha.</param>
     public static Result Failure(Error error) => new(false, error);
-    
-    // Se quiser criar um genérico a partir daqui, precisamos instanciar explicitamente a classe filha
+
+    /// <summary>
+    /// Cria um resultado genérico de sucesso contendo um valor.
+    /// </summary>
+    /// <typeparam name="T">O tipo do valor retornado.</typeparam>
+    /// <param name="value">O valor a ser retornado.</param>
     public static Result<T> Success<T>(T value) => Result<T>.Success(value);
+
+    /// <summary>
+    /// Cria um resultado genérico de falha.
+    /// </summary>
+    /// <typeparam name="T">O tipo do valor esperado.</typeparam>
+    /// <param name="error">O erro que descreve a falha.</param>
     public static Result<T> Failure<T>(Error error) => Result<T>.Failure(error);
 }
