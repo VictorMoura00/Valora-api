@@ -30,7 +30,7 @@ public static class OpenApiExtensions
             {
                 options
                     .WithTitle("Valora API Docs")
-                    .WithTheme(ScalarTheme.Mars) // Tema escuro avermelhado (pode mudar para BluePlanet, DeepSpace, etc)
+                    .WithTheme(ScalarTheme.Laserwave)
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             });
         }
