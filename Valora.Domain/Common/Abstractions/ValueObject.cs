@@ -1,4 +1,4 @@
-namespace Valora.Domain.Common;
+namespace Valora.Domain.Common.Abstractions;
 
 public abstract class ValueObject
 {
