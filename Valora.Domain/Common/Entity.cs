@@ -1,4 +1,4 @@
-namespace Valora.Domain.Common.Abstractions;
+namespace Valora.Domain.Common;
 
 public abstract class Entity
 {

@@ -1,11 +1,10 @@
 using MongoDB.Driver;
-using Valora.Domain.Common;
-using Valora.Domain.Common.Abstractions;
-// <--- Corrigido (era Abstractions)
+using Valora.Domain.Common; // <--- Corrigido (era Abstractions)
 using Valora.Domain.Interfaces;
 
 namespace Valora.Infra.Repositories;
 
+// Adicionei o "public" para que outros projetos possam herdar dele se precisar
 public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggregateRoot
 {
     protected readonly IMongoCollection<T> _collection;
@@ -37,12 +36,10 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
 
     public virtual async Task DeleteAsync(Guid id)
     {
-        var entity = await GetByIdAsync(id);
+        var update = Builders<T>.Update
+            .Set(x => x.IsDeleted, true)
+            .Set(x => x.UpdatedAt, DateTimeOffset.UtcNow);
 
-        if (entity != null)
-        {
-            entity.Delete(); 
-            await UpdateAsync(entity);
-        }
+        await _collection.UpdateOneAsync(x => x.Id == id, update);
     }
 }
