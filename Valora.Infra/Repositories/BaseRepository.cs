@@ -1,8 +1,8 @@
 using MongoDB.Driver;
 using Valora.Domain.Common;
 using Valora.Domain.Common.Abstractions;
+using Valora.Domain.Repositories;
 // <--- Corrigido (era Abstractions)
-using Valora.Domain.Interfaces;
 
 namespace Valora.Infra.Repositories;
 

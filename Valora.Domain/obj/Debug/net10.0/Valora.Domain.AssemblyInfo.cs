@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Valora.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f7599bad1266b12dd416a68b7305a22c36ab1ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("Valora.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Valora.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
