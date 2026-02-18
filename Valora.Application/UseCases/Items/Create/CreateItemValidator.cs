@@ -12,8 +12,5 @@ public class CreateItemValidator : AbstractValidator<CreateItemCommand>
 
         RuleFor(x => x.Category)
             .NotEmpty().WithMessage("A categoria é obrigatória.");
-
-        RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0).WithMessage("O preço não pode ser negativo.");
     }
 }

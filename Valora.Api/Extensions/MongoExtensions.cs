@@ -1,7 +1,9 @@
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using Valora.Infra.Options; // Certifique-se de ter essa referência
+using Valora.Infra.Options;
 
 namespace Valora.Api.Extensions;
 
@@ -9,9 +11,10 @@ public static class MongoExtensions
 {
     public static IServiceCollection AddMongoDb(this IServiceCollection services, IConfiguration configuration)
     {
-        // 1. Configura as Convenções do BSON (Globalmente)
-        // Isso garante que "NomeCompleto" no C# vire "nomeCompleto" no Mongo
-        // e que Enums sejam salvos como String (mais legível) em vez de Int.
+        #pragma warning disable CS0618 
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+        #pragma warning restore CS0618
+
         var pack = new ConventionPack
         {
             new CamelCaseElementNameConvention(),
@@ -20,18 +23,18 @@ public static class MongoExtensions
         };
         ConventionRegistry.Register("ValoraConventions", pack, t => true);
 
-        // 2. Configura o Options Pattern (Bind do appsettings.json)
+        // 3. Configura o Options Pattern
         services.Configure<MongoSettings>(
             configuration.GetSection(MongoSettings.SectionName));
 
-        // 3. Injeta o Cliente (Singleton - recomendado pela doc do Mongo)
+        // 4. Injeta o Cliente (Singleton)
         services.AddSingleton<IMongoClient>(sp =>
         {
             var settings = configuration.GetSection(MongoSettings.SectionName).Get<MongoSettings>();
             return new MongoClient(settings!.ConnectionString);
         });
 
-        // 4. Injeta o Banco de Dados (Scoped - para uso nos repositórios)
+        // 5. Injeta o Banco de Dados (Scoped)
         services.AddScoped<IMongoDatabase>(sp =>
         {
             var settings = configuration.GetSection(MongoSettings.SectionName).Get<MongoSettings>();

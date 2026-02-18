@@ -1,4 +1,5 @@
 using Valora.Api.Extensions;
+using Valora.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddDocumentation();                            // OpenAPI/Scala
 builder.Services.AddMongoDb(builder.Configuration);             // Conexão e Convenções
 builder.Services.AddGlobalErrorHandler();                       // Tratamento de Erros
 builder.Services.AddHealthMonitoring();                         // Health Checks
-builder.Services.AddProjectDependencies();                      // Mapeiamento automatico de implementação de interface
+builder.Services.AddProjectDependencies(builder.Configuration);                      // Mapeiamento automatico de implementação de interface
 builder.Services.AddApplication();                              // MediatR, Behaviors e Validators
 builder.Services.AddCorsPolicy(builder.Configuration);          // Cors
 

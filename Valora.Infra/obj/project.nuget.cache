@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "cfXLTZPkGRI=",
+  "dgSpecHash": "tKo57QH4EMA=",
   "success": true,
   "projectFilePath": "/var/home/apollo11zz/projetos/dotnet/Valora/Valora.Infra/Valora.Infra.csproj",
   "expectedPackageFiles": [
     "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
+    "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.3/microsoft.extensions.dependencyinjection.abstractions.10.0.3.nupkg.sha512",
     "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",
+    "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/microsoft.extensions.options/10.0.3/microsoft.extensions.options.10.0.3.nupkg.sha512",
+    "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/microsoft.extensions.primitives/10.0.3/microsoft.extensions.primitives.10.0.3.nupkg.sha512",
     "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/mongodb.bson/3.6.0/mongodb.bson.3.6.0.nupkg.sha512",
     "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/mongodb.driver/3.6.0/mongodb.driver.3.6.0.nupkg.sha512",
     "/var/home/apollo11zz/DistroBox/Ubuntu/.nuget/packages/sharpcompress/0.30.1/sharpcompress.0.30.1.nupkg.sha512",

@@ -1,11 +1,20 @@
 using System.Reflection;
+using Valora.Domain.Common.Interfaces;
+using Valora.Infra.Context;
+using Valora.Infra.Options;
 
 namespace Valora.Api.Extensions;
 
 public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection AddProjectDependencies(this IServiceCollection services)
+    public static IServiceCollection AddProjectDependencies(this IServiceCollection services, IConfiguration configuration)
     {
+        // 1. Vincula o JSON à classe de Settings (Necessário para o MongoContext)
+        services.Configure<MongoSettings>(configuration.GetSection(MongoSettings.SectionName));
+
+        // 2. Registra o MongoContext e o UnitOfWork de forma Scoped
+        services.AddScoped<MongoContext>();
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<MongoContext>());
         var applicationAssembly = Assembly.Load("Valora.Application");
         var infraAssembly = Assembly.Load("Valora.Infra");
 

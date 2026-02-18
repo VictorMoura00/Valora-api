@@ -7,14 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Context\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Valora.Domain\Valora.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.3" />
       <PackageReference Include="MongoDB.Driver" Version="3.6.0" />
     </ItemGroup>
 

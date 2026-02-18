@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using Valora.Domain.Common.Results;
 
-namespace Valora.Applicantion.Behaviors;
+namespace Valora.Application.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
