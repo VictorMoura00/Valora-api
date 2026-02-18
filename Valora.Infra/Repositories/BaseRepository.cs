@@ -1,49 +1,59 @@
 using MongoDB.Driver;
-using Valora.Domain.Common;
 using Valora.Domain.Common.Abstractions;
 using Valora.Domain.Common.Interfaces;
-using Valora.Domain.Repositories;
-// <--- Corrigido (era Abstractions)
+using Valora.Infra.Context; 
 
 namespace Valora.Infra.Repositories;
 
 public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggregateRoot
 {
     protected readonly IMongoCollection<T> _collection;
+    protected readonly MongoContext _context;
 
-    protected BaseRepository(IMongoDatabase database, string collectionName)
+    protected BaseRepository(IMongoDatabase database, MongoContext context, string collectionName)
     {
         _collection = database.GetCollection<T>(collectionName);
+        _context = context;
     }
 
     public virtual async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _collection.Find(x => x.Id == id && !x.IsDeleted).FirstOrDefaultAsync();
+        return await _collection
+            .Find(x => x.Id == id && !x.IsDeleted)
+            .FirstOrDefaultAsync();
     }
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _collection.Find(x => !x.IsDeleted).ToListAsync();
+        return await _collection
+            .Find(x => !x.IsDeleted)
+            .ToListAsync();
     }
 
-    public virtual async Task AddAsync(T entity)
+    public virtual Task AddAsync(T entity)
     {
-        await _collection.InsertOneAsync(entity);
+        _context.AddCommand(() => _collection.InsertOneAsync(entity));
+        return Task.CompletedTask;
     }
 
-    public virtual async Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(T entity)
     {
-        await _collection.ReplaceOneAsync(x => x.Id == entity.Id, entity);
+        _context.AddCommand(() => _collection.ReplaceOneAsync(x => x.Id == entity.Id, entity));
+        return Task.CompletedTask;
     }
 
-    public virtual async Task DeleteAsync(Guid id)
+    public virtual Task DeleteAsync(Guid id)
     {
-        var entity = await GetByIdAsync(id);
-
-        if (entity != null)
+        _context.AddCommand(async () => 
         {
-            entity.Delete(); 
-            await UpdateAsync(entity);
-        }
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                entity.Delete();
+                await _collection.ReplaceOneAsync(x => x.Id == id, entity);
+            }
+        });
+        
+        return Task.CompletedTask;
     }
 }
