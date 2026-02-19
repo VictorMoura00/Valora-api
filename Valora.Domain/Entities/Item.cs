@@ -1,39 +1,44 @@
 using System;
 using System.Collections.Generic;
 using Valora.Domain.Common.Abstractions;
-using Valora.Domain.Common.Exceptions; 
+using Valora.Domain.Common.Exceptions;
 
 namespace Valora.Domain.Entities;
 
-public class Item(Guid categoryId, Dictionary<string, object> data) : Entity, IAggregateRoot
+public class Item : Entity, IAggregateRoot
 {
-    public Guid CategoryId { get; private set; } = categoryId;
+    public Guid CategoryId { get; private set; }
+    public Dictionary<string, object> Data { get; private set; }
+    public decimal AverageRating { get; private set; }
+    public int ReviewCount { get; private set; }
 
-    public Dictionary<string, object> Data { get; private set; } = data;
+    // Construtor principal (Para uso da Aplicação)
+    public Item(Guid categoryId, Dictionary<string, object> data)
+    {
+        CategoryId = categoryId;
+        Data = data;
+        AverageRating = 0;
+        ReviewCount = 0;
+    }
 
-    public decimal AverageRating { get; private set; } = 0;
-    public int ReviewCount { get; private set; } = 0;
+    // O MongoDB precisa que seja público para instanciar via Reflection sem configurações extras.
+    [Obsolete("Construtor utilizado apenas pelo ORM/Database")]
+    public Item() 
+    {
+        Data = new Dictionary<string, object>();
+    }
 
-    /// <summary>
-    /// Valida se os dados deste item respeitam o "Schema" da categoria.
-    /// </summary>
     public void ValidateAgainstSchema(Category category)
     {
         foreach (var field in category.Schema)
         {
-            // Verifica se campos obrigatórios estão presentes
             if (field.IsRequired && !Data.ContainsKey(field.Name))
             {
                 throw new DomainException($"O campo '{field.Name}' é obrigatório para a categoria '{category.Name}'.");
             }
-
-            // Aqui você poderá expandir para validar Tipos (se é número, data, etc)
         }
     }
 
-    /// <summary>
-    /// Recalcula a média de avaliações.
-    /// </summary>
     public void UpdateRating(int newRatingValue)
     {
         var totalScore = (AverageRating * ReviewCount) + newRatingValue;
