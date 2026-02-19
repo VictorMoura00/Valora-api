@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Entities;
@@ -12,24 +11,24 @@ namespace Valora.Application.UseCases.Categories.Create;
 public class CreateCategoryHandler(
     ICategoryRepository _categoryRepository,
     IUnitOfWork _unitOfWork
-) : IRequestHandler<CreateCategoryCommand, Result<Guid>>
+)
 {
-    public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        var existingCategory = await _categoryRepository.GetByNameAsync(request.Name);
+        var existingCategory = await _categoryRepository.GetByNameAsync(command.Name);
         if (existingCategory is not null)
         {
             return Result.Failure<Guid>(Error.Conflict(
                 "Category.DuplicateName",
-                $"Já existe uma categoria com o nome '{request.Name}'."
+                $"Já existe uma categoria com o nome '{command.Name}'."
             ));
         }
 
-        var category = new Category(request.Name, request.Description);
+        var category = new Category(command.Name, command.Description);
 
-        if (request.Schema is not null)
+        if (command.Schema is not null)
         {
-            foreach (var field in request.Schema)
+            foreach (var field in command.Schema)
             {
                 category.AddField(field.Name, field.Type, field.IsRequired);
             }

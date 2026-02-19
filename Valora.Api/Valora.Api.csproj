@@ -1,14 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    </PropertyGroup>
+      <UserSecretsId>02d1c611-d1f7-4562-a49c-d0c9a7bf68c4</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
+        <PackageReference Include="Azure.Core" Version="1.51.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
         <PackageReference Include="MongoDB.Bson" Version="3.6.0" />
         <PackageReference Include="MongoDB.Driver" Version="3.6.0" />
@@ -16,6 +18,8 @@
         <PackageReference Include="Scrutor" Version="7.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+        <PackageReference Include="WolverineFx.AzureServiceBus" Version="5.16.2" />
+        <PackageReference Include="WolverineFx.FluentValidation" Version="5.16.2" />
     </ItemGroup>
 
     <ItemGroup>

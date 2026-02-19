@@ -1,12 +1,6 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Valora.Api.Extensions;
 
@@ -41,6 +35,30 @@ public class GlobalExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
+        // 1. Intercepta erros de validação do Wolverine/FluentValidation
+        if (exception is ValidationException validationException)
+        {
+            var errors = validationException.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var validationProblemDetails = new ValidationProblemDetails(errors)
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Erro de Validação",
+                Detail = "Um ou mais erros de validação ocorreront durante a requisição."
+            };
+
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await httpContext.Response.WriteAsJsonAsync(validationProblemDetails, cancellationToken);
+
+            return true;
+        }
+
+        // 2. Comportamento Padrão (Erro 500)
         _logger.LogError(exception, "Erro não tratado: {Message}", exception.Message);
 
         var problemDetails = new ProblemDetails
@@ -48,10 +66,9 @@ public class GlobalExceptionHandler : IExceptionHandler
             Status = StatusCodes.Status500InternalServerError,
             Title = "Erro interno no servidor",
             Detail = "Ocorreu um erro inesperado. Tente novamente mais tarde."
-            // Em DEV, você poderia adicionar exception.StackTrace aqui
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
