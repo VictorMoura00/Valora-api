@@ -5,3 +5,5 @@
 /Valora.Application/obj
 /Valora.Infra/bin
 /Valora.Infra/obj
+/Valora.Domain/obj
+/Valora.Domain/bin
