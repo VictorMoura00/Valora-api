@@ -5,8 +5,9 @@ using Valora.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do Host / Mensageria (Wolverine)
-builder.Host.AddWolverineSetup(builder.Configuration);
+
+builder.AddAzureKeyVaultSetup(); // Configuração de Cofre de Senhas (Azure Key Vault)
+builder.Host.AddWolverineSetup(builder.Configuration); // Configuração do Host / Mensageria (Wolverine)
 
 // Configuração de Serviços (DI Container)
 builder.Services.AddControllers();
