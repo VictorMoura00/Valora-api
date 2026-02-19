@@ -1,4 +1,7 @@
+using System;
+using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Valora.Api.Controllers.Abstractions;
 using Valora.Application.UseCases.Categories.Create;

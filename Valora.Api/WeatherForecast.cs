@@ -1,3 +1,5 @@
+using System;
+
 namespace Valora.Api;
 
 public class WeatherForecast

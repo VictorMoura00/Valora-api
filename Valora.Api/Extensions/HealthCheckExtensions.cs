@@ -1,3 +1,6 @@
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver; // Necessário para IMongoClient
 
 namespace Valora.Api.Extensions;

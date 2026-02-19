@@ -1,4 +1,6 @@
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Valora.Domain.Common.Interfaces;
 using Valora.Infra.Context;
 using Valora.Infra.Options;
