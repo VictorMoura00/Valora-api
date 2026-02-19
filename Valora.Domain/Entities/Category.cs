@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Valora.Domain.Common.Abstractions;
 
 namespace Valora.Domain.Entities;

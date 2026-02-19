@@ -1,3 +1,4 @@
+using System;
 using Valora.Domain.Entities;
 
 namespace Valora.Application.UseCases.Categories.GetById;

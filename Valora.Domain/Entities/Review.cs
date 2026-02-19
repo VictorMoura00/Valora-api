@@ -1,3 +1,4 @@
+using System;
 using Valora.Domain.Common.Abstractions;
 
 namespace Valora.Domain.Entities;

@@ -1,3 +1,5 @@
+using System;
+
 namespace Valora.Domain.Common.Results;
 
 /// <summary>

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Valora.Domain.Common.Results;
 
 public class PaginatedList<T>(List<T> items, long count, int pageNumber, int pageSize)

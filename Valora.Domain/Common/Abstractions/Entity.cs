@@ -1,3 +1,5 @@
+using System;
+
 namespace Valora.Domain.Common.Abstractions;
 
 public abstract class Entity
