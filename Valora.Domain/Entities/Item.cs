@@ -1,32 +1,43 @@
 using Valora.Domain.Common.Abstractions;
+using Valora.Domain.Common.Exceptions; 
 
 namespace Valora.Domain.Entities;
 
-public class Item : Entity, IAggregateRoot
+public class Item(Guid categoryId, Dictionary<string, object> data) : Entity, IAggregateRoot
 {
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public string Category { get; private set; }
-    
-    //Dados cacheados
-    public decimal AverageRating { get; private set; }
-    public int ReviewCount { get; private set; }
-    
-    public Item(string name, string description, string category)
+    public Guid CategoryId { get; private set; } = categoryId;
+
+    public Dictionary<string, object> Data { get; private set; } = data;
+
+    public decimal AverageRating { get; private set; } = 0;
+    public int ReviewCount { get; private set; } = 0;
+
+    /// <summary>
+    /// Valida se os dados deste item respeitam o "Schema" da categoria.
+    /// </summary>
+    public void ValidateAgainstSchema(Category category)
     {
-        Name = name;
-        Description = description;
-        Category = category;
-        AverageRating = 0;
-        ReviewCount = 0;
+        foreach (var field in category.Schema)
+        {
+            // Verifica se campos obrigatórios estão presentes
+            if (field.IsRequired && !Data.ContainsKey(field.Name))
+            {
+                throw new DomainException($"O campo '{field.Name}' é obrigatório para a categoria '{category.Name}'.");
+            }
+
+            // Aqui você poderá expandir para validar Tipos (se é número, data, etc)
+        }
     }
 
-    public void UpdateRating(decimal newRatingValue)
+    /// <summary>
+    /// Recalcula a média de avaliações.
+    /// </summary>
+    public void UpdateRating(int newRatingValue)
     {
         var totalScore = (AverageRating * ReviewCount) + newRatingValue;
         ReviewCount++;
         AverageRating = totalScore / ReviewCount;
         
-        SetUdapted();
+        SetUpdated(); 
     }
 }

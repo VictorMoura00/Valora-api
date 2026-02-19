@@ -14,7 +14,7 @@ public abstract class Entity
         IsDeleted = false;
     }
 
-    public void SetUdapted()
+    public void SetUpdated()
     {
         UpdatedAt = DateTimeOffset.UtcNow;
     }
@@ -22,7 +22,7 @@ public abstract class Entity
     public void Delete()
     {
         IsDeleted = true;
-        SetUdapted();
+        SetUpdated();
     }
     
 }

@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using Valora.Domain.Common.Abstractions;
 using Valora.Domain.Common.Interfaces;
+using Valora.Domain.Common.Results;
 using Valora.Infra.Context; 
 
 namespace Valora.Infra.Repositories;
@@ -55,5 +56,17 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
         });
         
         return Task.CompletedTask;
+    }
+    
+    public virtual async Task<PaginatedList<T>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var filter = Builders<T>.Filter.Eq(x => x.IsDeleted, false);
+        var count = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+        var items = await _collection.Find(filter)
+            .Skip((page - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PaginatedList<T>(items, count, page, pageSize);
     }
 }

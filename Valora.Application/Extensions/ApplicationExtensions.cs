@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Valora.Application.Behaviors;
-using Valora.Application.UseCases.Items.Create; 
 
 namespace Valora.Application.Extensions;
 
@@ -9,7 +8,7 @@ public static class ApplicationExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        var assembly = typeof(CreateItemCommand).Assembly;
+        var assembly = typeof(ValidationBehavior<,>).Assembly;
 
         services.AddMediatR(cfg =>
         {
