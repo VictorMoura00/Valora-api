@@ -8,3 +8,5 @@
 /Valora.Domain/obj
 /Valora.Domain/bin
 /Valora.Application/bin
+/Valora.UnitTests/bin
+/Valora.UnitTests/obj
