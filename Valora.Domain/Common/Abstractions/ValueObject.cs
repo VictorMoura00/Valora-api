@@ -1,29 +1,16 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Valora.Domain.Common.Abstractions;
 
-public abstract class ValueObject
+public abstract class ValueObject : IEquatable<ValueObject>
 {
-    protected static bool EqualOperator(ValueObject left, ValueObject right)
-    {
-        if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
-        {
-            return false;
-        }
-        return ReferenceEquals(left, null) || left.Equals(right);
-    }
-
-    protected static bool NotEqualOperator(ValueObject left, ValueObject right)
-    {
-        return !(EqualOperator(left, right));
-    }
-
-    protected abstract IEnumerable<object> GetEqualityComponents();
+    protected abstract IEnumerable<object?> GetEqualityComponents();
 
     public override bool Equals(object? obj)
     {
-        if (obj == null || obj.GetType() != GetType())
+        if (obj is null || obj.GetType() != GetType())
         {
             return false;
         }
@@ -32,10 +19,39 @@ public abstract class ValueObject
         return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
     }
 
+    public bool Equals(ValueObject? other)
+    {
+        if (other is null || other.GetType() != GetType())
+            return false;
+
+        return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+    }
+
     public override int GetHashCode()
     {
-        return GetEqualityComponents()
-            .Select(x => x != null ? x.GetHashCode() : 0)
-            .Aggregate((x, y) => x ^ y);
+        var hashCode = new HashCode();
+
+        foreach (var component in GetEqualityComponents())
+        {
+            hashCode.Add(component);
+        }
+
+        return hashCode.ToHashCode();
+    }
+
+    public static bool operator ==(ValueObject? left, ValueObject? right)
+    {
+        if (left is null && right is null)
+            return true;
+
+        if (left is null || right is null)
+            return false;
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ValueObject? left, ValueObject? right)
+    {
+        return !(left == right);
     }
 }
