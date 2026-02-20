@@ -53,7 +53,34 @@ public class Category : Entity, IAggregateRoot
 
         return Result.Success();
     }
+
+
+    public Result ReplaceSchema(IEnumerable<FieldDefinition> newFields)
+    {
+        var tempSchema = new List<FieldDefinition>();
+
+        foreach (var field in newFields)
+        {
+            if (string.IsNullOrWhiteSpace(field.Name))
+                return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo não pode ser vazio."));
+
+            if (tempSchema.Exists(x => x.Name.Equals(field.Name, StringComparison.OrdinalIgnoreCase)))
+                return Result.Failure(Error.Conflict(
+                    "Category.DuplicateField",
+                    $"O campo '{field.Name}' está duplicado na nova lista de schema."));
+
+            tempSchema.Add(field);
+        }
+
+        _schema.Clear();
+        _schema.AddRange(tempSchema);
+
+        SetUpdated();
+
+        return Result.Success();
+    }
 }
+
 
 public record FieldDefinition(string Name, FieldType Type, bool IsRequired);
 
