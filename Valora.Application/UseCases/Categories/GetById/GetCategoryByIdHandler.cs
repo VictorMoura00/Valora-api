@@ -1,36 +1,36 @@
-//using System.Linq;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using MediatR;
-//using Valora.Domain.Common.Results;
-//using Valora.Domain.Repositories;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Valora.Application.UseCases.Categories.Create;
+using Valora.Domain.Common.Results;
+using Valora.Domain.Repositories;
 
-//namespace Valora.Application.UseCases.Categories.GetById;
+namespace Valora.Application.UseCases.Categories.GetById;
 
-//public class GetCategoryByIdHandler(ICategoryRepository _categoryRepository) 
-//    : IRequestHandler<GetCategoryByIdQuery, Result<CategoryResponse>>
-//{
-//    public async Task<Result<CategoryResponse>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
-//    {
-//        var category = await _categoryRepository.GetByIdAsync(request.Id);
+public static class GetCategoryByIdHandler
+{
+    public static async Task<Result<CategoryResponse>> Handle(
+        GetCategoryByIdQuery query,
+        ICategoryRepository categoryRepository,
+        CancellationToken cancellationToken)
+    {
+        var category = await categoryRepository.GetByIdAsync(query.Id);
 
-//        if (category is null)
-//            return Result.Failure<CategoryResponse>(Error.NotFound(
-//                "Category.NotFound",
-//                $"A categoria com o ID '{request.Id}' não foi encontrada."
-//            ));
+        if (category is null)
+        {
+            return Result.Failure<CategoryResponse>(Error.NotFound(
+                "Category.NotFound",
+                $"A categoria com o ID '{query.Id}' não foi encontrada."
+            ));
+        }
 
-//        var response = new CategoryResponse(
-//            category.Id,
-//            category.Name,
-//            category.Description,
-//            category.Schema.Select(f => new CategoryFieldResponse(
-//                f.Name,
-//                f.Type.ToString(),
-//                f.IsRequired
-//            )).ToList()
-//        );
+        var response = new CategoryResponse(
+            category.Id,
+            category.Name,
+            category.Description,
+            category.Schema.Select(f => new CategoryFieldDto(f.Name, f.Type, f.IsRequired))
+        );
 
-//        return response;
-//    }
-//}
+        return response;
+    }
+}

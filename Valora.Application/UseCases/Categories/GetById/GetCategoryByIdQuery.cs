@@ -1,7 +1,7 @@
-//using System;
-//using MediatR;
-//using Valora.Domain.Common.Results;
+using System;
+using System.Collections.Generic;
+using Valora.Application.UseCases.Categories.Create; // Reaproveitando o CategoryFieldDto (DRY)
 
-//namespace Valora.Application.UseCases.Categories.GetById;
+namespace Valora.Application.UseCases.Categories.GetById;
 
-//public record GetCategoryByIdQuery(Guid Id) : IRequest<Result<CategoryResponse>>;
+public record GetCategoryByIdQuery(Guid Id);

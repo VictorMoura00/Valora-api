@@ -8,5 +8,5 @@ public record CategoryFieldDto(string Name, FieldType Type, bool IsRequired);
 public record CreateCategoryCommand(
     string Name,
     string Description,
-    List<CategoryFieldDto> Schema
+    List<CategoryFieldDto>? Schema = null
 );
