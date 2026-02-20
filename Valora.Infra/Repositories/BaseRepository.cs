@@ -39,7 +39,9 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
 
     public virtual Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _context.AddCommand(() => _collection.InsertOneAsync(entity, cancellationToken: cancellationToken));
+        _context.AddCommand(session =>
+            _collection.InsertOneTransactionalAsync(session, entity, cancellationToken));
+
         return Task.CompletedTask;
     }
 
@@ -47,7 +49,9 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
     {
         var idFilter = Builders<T>.Filter.Eq(e => e.Id, entity.Id);
 
-        _context.AddCommand(() => _collection.ReplaceOneAsync(idFilter, entity, cancellationToken: cancellationToken));
+        _context.AddCommand(session =>
+            _collection.ReplaceOneTransactionalAsync(session, idFilter, entity, cancellationToken));
+
         return Task.CompletedTask;
     }
 
@@ -59,7 +63,9 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
             .Set(e => e.IsDeleted, true)
             .Set(e => e.UpdatedAt, DateTime.UtcNow);
 
-        _context.AddCommand(() => _collection.UpdateOneAsync(idFilter, updateDefinition, cancellationToken: cancellationToken));
+        _context.AddCommand(session =>
+            _collection.UpdateOneTransactionalAsync(session, idFilter, updateDefinition, cancellationToken));
+
         return Task.CompletedTask;
     }
 

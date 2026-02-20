@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -14,29 +13,28 @@ public class MongoContext : IUnitOfWork
 {
     private readonly IMongoClient _mongoClient = null!;
     private readonly MongoSettings _settings = null!;
-    private readonly List<Func<Task>> _commands = new();
+    private readonly List<Func<IClientSessionHandle?, Task>> _commands = new();
 
-    // Construtor protegido VAZIO para o NSubstitute criar o Proxy de forma segura
-    protected MongoContext() 
-    { 
-    }
+    protected MongoContext() { }
 
-    // Construtor real utilizado pela injeção de dependência da aplicação
     public MongoContext(IMongoClient mongoClient, IOptions<MongoSettings> settings)
     {
         _mongoClient = mongoClient;
         _settings = settings.Value;
     }
 
-    // Método virtual para que o NSubstitute consiga interceptar a chamada no teste
-    public virtual void AddCommand(Func<Task> func) => _commands.Add(func);
+    public virtual void AddCommand(Func<IClientSessionHandle?, Task> func) => _commands.Add(func);
 
     public virtual async Task CommitAsync(CancellationToken cancellationToken = default)
     {
+        if (_commands.Count == 0) return; 
+
         if (!_settings.EnableTransactions)
         {
-            var commandTasks = _commands.Select(c => c());
-            await Task.WhenAll(commandTasks);
+            foreach (var command in _commands)
+            {
+                await command(null);
+            }
             _commands.Clear();
             return;
         }
@@ -46,8 +44,10 @@ public class MongoContext : IUnitOfWork
 
         try
         {
-            var commandTasks = _commands.Select(c => c());
-            await Task.WhenAll(commandTasks);
+            foreach (var command in _commands)
+            {
+                await command(session);
+            }
 
             await session.CommitTransactionAsync(cancellationToken);
         }
