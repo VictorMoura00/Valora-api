@@ -38,8 +38,10 @@ public class CategoryRepositoryTests
         await _repository.AddAsync(category);
 
         // Assert
-        _contextMock.Received(1).AddCommand(Arg.Any<Func<Task>>());
-        await _collectionMock.DidNotReceiveWithAnyArgs().InsertOneAsync(default!);
+        // Correção: Agora esperamos um Func que recebe IClientSessionHandle? e retorna Task
+        _contextMock.Received(1).AddCommand(Arg.Any<Func<IClientSessionHandle?, Task>>());
+
+        await _collectionMock.DidNotReceiveWithAnyArgs().InsertOneAsync(default(Category), null);
     }
 
     [Fact(DisplayName = "UpdateAsync deve enfileirar o comando de substituição no MongoContext")]
@@ -52,9 +54,10 @@ public class CategoryRepositoryTests
         await _repository.UpdateAsync(category);
 
         // Assert
-        _contextMock.Received(1).AddCommand(Arg.Any<Func<Task>>());
+        _contextMock.Received(1).AddCommand(Arg.Any<Func<IClientSessionHandle?, Task>>());
+
         await _collectionMock.DidNotReceiveWithAnyArgs().ReplaceOneAsync(
-            Arg.Any<FilterDefinition<Category>>(), 
+            Arg.Any<FilterDefinition<Category>>(),
             Arg.Any<Category>());
     }
 
@@ -68,6 +71,6 @@ public class CategoryRepositoryTests
         await _repository.DeleteAsync(categoryId);
 
         // Assert
-        _contextMock.Received(1).AddCommand(Arg.Any<Func<Task>>());
+        _contextMock.Received(1).AddCommand(Arg.Any<Func<IClientSessionHandle?, Task>>());
     }
 }
