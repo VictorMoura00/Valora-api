@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Valora.Domain.Common.Results;
 
@@ -28,18 +29,10 @@ public class Result
     /// </summary>
     /// <param name="isSuccess">Estado de sucesso da operação.</param>
     /// <param name="error">Erro associado (deve ser <see cref="Error.None"/> se sucesso).</param>
-    /// <exception cref="InvalidOperationException">Lançada se o estado for inconsistente (Sucesso com Erro ou Falha sem Erro).</exception>
     protected Result(bool isSuccess, Error error)
     {
-        if (isSuccess && error != Error.None)
-        {
-            throw new InvalidOperationException("Um resultado de sucesso não pode conter um erro.");
-        }
-
-        if (!isSuccess && error == Error.None)
-        {
-            throw new InvalidOperationException("Um resultado de falha deve conter um erro.");
-        }
+        Debug.Assert(isSuccess && error == Error.None || !isSuccess && error != Error.None,
+            "Estado de sucesso/falha incompatível com o erro fornecido.");
 
         IsSuccess = isSuccess;
         Error = error;

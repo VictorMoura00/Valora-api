@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Valora.Domain.Common.Abstractions;
-using Valora.Domain.Common.Results;
+using Valora.Domain.Common.Pagination;
 
 namespace Valora.Domain.Common.Interfaces;
 

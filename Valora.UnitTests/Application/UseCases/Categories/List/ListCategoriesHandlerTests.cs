@@ -1,6 +1,7 @@
 using FluentAssertions;
 using NSubstitute;
 using Valora.Application.UseCases.Categories.List;
+using Valora.Domain.Common.Pagination;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Entities;
 using Valora.Domain.Repositories;

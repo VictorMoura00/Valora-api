@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Valora.Application.UseCases.Categories.Create;
 using Valora.Application.UseCases.Categories.GetById;
+using Valora.Domain.Common.Pagination;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Repositories;
 

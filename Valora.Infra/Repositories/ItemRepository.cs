@@ -1,5 +1,5 @@
 using MongoDB.Driver;
-using Valora.Domain.Common.Results;
+using Valora.Domain.Common.Pagination;
 using Valora.Domain.Entities;
 using Valora.Domain.Repositories;
 using Valora.Infra.Context;

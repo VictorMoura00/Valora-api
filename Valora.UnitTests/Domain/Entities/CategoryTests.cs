@@ -2,6 +2,7 @@
 using System.Linq;
 using Xunit;
 using Valora.Domain.Entities;
+using Valora.Domain.Common.Results;
 
 namespace Valora.UnitTests.Domain.Entities;
 
@@ -16,7 +17,8 @@ public class CategoryTests
         // Assert
         Assert.Equal("Tecnologia", category.Name);
         Assert.Equal("Equipamentos de TI", category.Description);
-        Assert.NotNull(category.UpdatedAt);
+
+        Assert.Null(category.UpdatedAt);
         Assert.Empty(category.Schema);
     }
 
@@ -31,49 +33,88 @@ public class CategoryTests
     }
 
     [Fact]
-    public void Update_DeveAlterarDados_E_AtualizarData()
+    public void Update_DeveRetornarSucesso_AlterarDados_E_AtualizarData()
     {
         // Arrange
         var category = new Category("Nome Antigo", "Descrição Antiga");
-        var dataAtualizacaoInicial = category.UpdatedAt;
+        var dataCriacao = category.CreatedAt;
 
         // Act
-        category.Update("Nome Novo", "Descrição Nova");
+        var result = category.Update("Nome Novo", "Descrição Nova");
 
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Equal("Nome Novo", category.Name);
         Assert.Equal("Descrição Nova", category.Description);
-        Assert.True(category.UpdatedAt >= dataAtualizacaoInicial);
+        Assert.NotNull(category.UpdatedAt);
+        Assert.True(category.UpdatedAt >= dataCriacao);
+    }
+
+    [Theory]
+    [InlineData("", "Descrição válida", "Category.InvalidName")]
+    [InlineData("Nome válido", "", "Category.InvalidDescription")]
+    public void Update_DeveRetornarFalha_QuandoDadosForemInvalidos(string name, string description, string expectedErrorCode)
+    {
+        // Arrange
+        var category = new Category("Nome Antigo", "Descrição Antiga");
+
+        // Act
+        var result = category.Update(name, description);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal(expectedErrorCode, result.Error.Code);
+        Assert.Equal("Nome Antigo", category.Name);
     }
 
     [Fact]
-    public void AddField_DeveAdicionarCampoNoSchema_E_AtualizarData()
+    public void AddField_DeveRetornarSucesso_AdicionarCampoNoSchema_E_AtualizarData()
     {
         // Arrange
         var category = new Category("Imóveis", "Categoria de imóveis");
 
         // Act
-        category.AddField("Metragem", FieldType.Number, true);
+        var result = category.AddField("Metragem", FieldType.Number, true);
 
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Single(category.Schema);
+
         var field = category.Schema.First();
         Assert.Equal("Metragem", field.Name);
         Assert.Equal(FieldType.Number, field.Type);
         Assert.True(field.IsRequired);
+        Assert.NotNull(category.UpdatedAt);
     }
 
     [Fact]
-    public void AddField_DeveLancarExcecao_QuandoCampoJaExistir()
+    public void AddField_DeveRetornarFalha_QuandoCampoJaExistir()
     {
         // Arrange
         var category = new Category("Veículos", "Categoria de veículos");
         category.AddField("Placa", FieldType.Text, true);
 
-        // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() =>
-            category.AddField("placa", FieldType.Text, false));
+        // Act 
+        var result = category.AddField("placa", FieldType.Text, false);
 
-        Assert.Equal("O campo 'placa' já existe no schema desta categoria.", exception.Message);
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("Category.DuplicateField", result.Error.Code);
+        Assert.Single(category.Schema);
+    }
+
+    [Fact]
+    public void AddField_DeveRetornarFalha_QuandoNomeDoCampoForVazio()
+    {
+        // Arrange
+        var category = new Category("Veículos", "Categoria de veículos");
+
+        // Act
+        var result = category.AddField("   ", FieldType.Text, true);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("Category.InvalidFieldName", result.Error.Code);
+        Assert.Empty(category.Schema);
     }
 }

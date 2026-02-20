@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using Valora.Domain.Common.Abstractions;
 using Valora.Domain.Common.Interfaces;
-using Valora.Domain.Common.Results;
-using Valora.Infra.Context; 
+using Valora.Domain.Common.Pagination;
+using Valora.Infra.Context;
 
 namespace Valora.Infra.Repositories;
 

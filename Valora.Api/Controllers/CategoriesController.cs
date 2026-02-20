@@ -7,6 +7,7 @@ using Valora.Application.UseCases.Categories.Create;
 using Valora.Application.UseCases.Categories.GetById;
 using Valora.Application.UseCases.Categories.List;
 using Valora.Application.UseCases.Categories.Update;
+using Valora.Domain.Common.Pagination;
 using Valora.Domain.Common.Results;
 using Wolverine;
 

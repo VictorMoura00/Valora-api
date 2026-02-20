@@ -30,7 +30,7 @@ public record Error
     /// <summary>
     /// Representa a ausência de erro (Sucesso).
     /// </summary>
-    public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Failure);
+    public static readonly Error None = new(string.Empty, string.Empty, ErrorType.None);
 
     /// <summary>
     /// Erro padrão para valores nulos não permitidos.
@@ -66,4 +66,5 @@ public record Error
     /// </summary>
     public static Error Conflict(string code, string description) => 
         new(code, description, ErrorType.Conflict);
+
 }

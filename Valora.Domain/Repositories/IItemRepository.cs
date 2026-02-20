@@ -1,5 +1,5 @@
 using Valora.Domain.Common.Interfaces;
-using Valora.Domain.Common.Results;
+using Valora.Domain.Common.Pagination;
 using Valora.Domain.Entities;
 
 namespace Valora.Domain.Repositories;

@@ -17,7 +17,7 @@ public static class CreateCategoryHandler
         CancellationToken cancellationToken)
     {
         var existingCategory = await categoryRepository.GetByNameAsync(command.Name);
-        
+
         if (existingCategory is not null)
         {
             return Result.Failure<Guid>(Error.Conflict(
@@ -32,7 +32,10 @@ public static class CreateCategoryHandler
         {
             foreach (var field in command.Schema)
             {
-                category.AddField(field.Name, field.Type, field.IsRequired);
+                var addFieldResult = category.AddField(field.Name, field.Type, field.IsRequired);
+
+                if (addFieldResult.IsFailure)
+                    return Result.Failure<Guid>(addFieldResult.Error);
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Valora.Domain.Common.Abstractions;
+using Valora.Domain.Common.Results;
 
 namespace Valora.Domain.Entities;
 
@@ -13,31 +14,44 @@ public class Category : Entity, IAggregateRoot
 
     public Category(string name, string description)
     {
-        // DRY: Reutilizando as validações e atribuições
-        Update(name, description);
-    }
-
-    public void Update(string name, string description)
-    {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(description);
 
         Name = name;
         Description = description;
-
-        SetUpdated();
     }
 
-    public void AddField(string name, FieldType type, bool required = false)
+    public Result Update(string name, string description)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Failure(Error.Validation("Category.InvalidName", "O nome da categoria não pode ser vazio."));
+
+        if (string.IsNullOrWhiteSpace(description))
+            return Result.Failure(Error.Validation("Category.InvalidDescription", "A descrição não pode ser vazia."));
+
+        Name = name;
+        Description = description;
+
+        SetUpdated();
+
+        return Result.Success();
+    }
+
+    public Result AddField(string name, FieldType type, bool required = false)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo não pode ser vazio."));
 
         if (_schema.Exists(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidOperationException($"O campo '{name}' já existe no schema desta categoria.");
+            return Result.Failure(Error.Conflict(
+                "Category.DuplicateField",
+                $"O campo '{name}' já existe no schema desta categoria."));
 
         _schema.Add(new FieldDefinition(name, type, required));
 
         SetUpdated();
+
+        return Result.Success();
     }
 }
 
