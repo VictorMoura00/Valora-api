@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valora.Api", "Valora.Api\Valora.Api.csproj", "{1B578F51-0F73-4161-909D-BEFE09021C1E}"
 EndProject
@@ -19,6 +19,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valora.Infra", "Valora.Infra\Valora.Infra.csproj", "{3EF785A5-FDF1-4FC9-AD97-69A5F20CA7D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valora.UnitTests", "Valora.UnitTests\Valora.UnitTests.csproj", "{84391D2B-9DFB-4B4B-8059-8533C2F95F52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A3216F85-56C9-46CA-9D0E-D94ED986759B}"
+	ProjectSection(SolutionItems) = preProject
+		categories.md = categories.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A3216F85-56C9-46CA-9D0E-D94ED986759B} = {0715E4A0-8CB9-4C0F-9D1C-57FA1E56D87B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6ABCFE53-77C7-4289-8DA5-E012928B77F3}
