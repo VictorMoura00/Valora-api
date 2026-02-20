@@ -30,8 +30,4 @@
         <ProjectReference Include="..\Valora.Infra\Valora.Infra.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Domain\" />
-    </ItemGroup>
-
 </Project>
