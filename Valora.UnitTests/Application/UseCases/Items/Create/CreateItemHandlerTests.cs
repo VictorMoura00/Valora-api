@@ -1,66 +1,74 @@
 using FluentAssertions;
 using NSubstitute;
-using Valora.Application.UseCases.Items.Create;
+using Valora.Application.UseCases.Categories.Create;
 using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Entities;
 using Valora.Domain.Repositories;
-using Valora.UnitTests.Abstractions; 
-using Xunit;
+using Valora.UnitTests.Abstractions;
 
 namespace Valora.UnitTests.Application.UseCases.Items.Create;
 
-public class CreateItemHandlerTests
+/// <summary>
+/// Testes unitários para o caso de uso de criação de categoria.
+/// Autor: Victor Moura
+/// </summary>
+public class CreateCategoryHandlerTests
 {
-    private readonly IItemRepository _itemRepoMock;
-    private readonly ICategoryRepository _categoryRepoMock;
-    private readonly IUnitOfWork _uowMock;
-    private readonly CreateItemHandler _handler;
+    private readonly ICategoryRepository _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+    private readonly IUnitOfWork _unitOfWorkMock = Substitute.For<IUnitOfWork>();
 
-    public CreateItemHandlerTests()
-    {
-        _itemRepoMock = Substitute.For<IItemRepository>();
-        _categoryRepoMock = Substitute.For<ICategoryRepository>();
-        _uowMock = Substitute.For<IUnitOfWork>();
-        _handler = new CreateItemHandler(_itemRepoMock, _categoryRepoMock, _uowMock);
-    }
-
-    [Fact]
-    public async Task Handle_Should_ReturnFailure_When_CategoryNotFound()
+    [Fact(DisplayName = "Deve retornar falha (Conflict) quando o nome da categoria já existir")]
+    public async Task Handle_Should_ReturnFailure_WhenNameAlreadyExists()
     {
         // Arrange
-        var command = new CreateItemCommand(Constants.Category.Id, new Dictionary<string, object>());
+        var command = new CreateCategoryCommand(Constants.Category.Name, Constants.Category.Description);
+        var existingCategory = new Category(Constants.Category.Name, "Outra descrição qualquer");
         
-        // Mockando retorno nulo
-        _categoryRepoMock.GetByIdAsync(Constants.Category.Id).Returns((Category?)null);
+        _categoryRepositoryMock.GetByNameAsync(command.Name).Returns(existingCategory);
+
+        var expectedError = Error.Conflict(
+            "Category.DuplicateName",
+            $"Já existe uma categoria com o nome '{command.Name}'."
+        );
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await CreateCategoryHandler.Handle(
+            command,
+            _categoryRepositoryMock,
+            _unitOfWorkMock,
+            CancellationToken.None);
 
-        // Assert (Usando nossa extensão personalizada!)
-        result.Should().BeFailure(Error.NotFound("Category.NotFound", ""));
+        // Assert
+        result.Should().BeFailure(expectedError);
+
+        await _categoryRepositoryMock.DidNotReceiveWithAnyArgs().AddAsync(default!);
+        await _unitOfWorkMock.DidNotReceiveWithAnyArgs().CommitAsync(default);
     }
 
-    [Fact]
-    public async Task Handle_Should_ReturnSuccess_When_Valid()
+    [Fact(DisplayName = "Deve criar a categoria e retornar sucesso com o ID quando os dados forem válidos")]
+    public async Task Handle_Should_ReturnSuccess_WhenCategoryIsNew()
     {
         // Arrange
-        var category = new Category(Constants.Category.Name, Constants.Category.Description);
-        // Configurando schema simples
-        category.AddField("Titulo", FieldType.Text, required: true);
-        
-        var fields = new Dictionary<string, object> { { "Titulo", Constants.Item.ValidTitle } };
-        var command = new CreateItemCommand(category.Id, fields);
+        var command = new CreateCategoryCommand(Constants.Category.Name, Constants.Category.Description);
 
-        _categoryRepoMock.GetByIdAsync(category.Id).Returns(category);
+        _categoryRepositoryMock.GetByNameAsync(command.Name).Returns((Category?)null);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await CreateCategoryHandler.Handle(
+            command,
+            _categoryRepositoryMock,
+            _unitOfWorkMock,
+            CancellationToken.None);
 
         // Assert
         result.Should().BeSuccess();
-        
-        // Verifica se chamou o commit
-        await _uowMock.Received(1).CommitAsync(Arg.Any<CancellationToken>());
+        result.Value.Should().NotBeEmpty();
+
+        await _categoryRepositoryMock.Received(1).AddAsync(Arg.Is<Category>(c => 
+            c.Name == command.Name && 
+            c.Description == command.Description));
+
+        await _unitOfWorkMock.Received(1).CommitAsync(Arg.Any<CancellationToken>());
     }
 }
