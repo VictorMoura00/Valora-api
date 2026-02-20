@@ -21,33 +21,33 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
         _context = context;
     }
 
-    public virtual async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _collection
             .Find(x => x.Id == id && !x.IsDeleted)
             .FirstOrDefaultAsync();
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _collection
             .Find(x => !x.IsDeleted)
             .ToListAsync();
     }
 
-    public virtual Task AddAsync(T entity)
+    public virtual Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         _context.AddCommand(() => _collection.InsertOneAsync(entity));
         return Task.CompletedTask;
     }
 
-    public virtual Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         _context.AddCommand(() => _collection.ReplaceOneAsync(x => x.Id == entity.Id, entity));
         return Task.CompletedTask;
     }
 
-    public virtual Task DeleteAsync(Guid id)
+    public virtual Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         _context.AddCommand(async () => 
         {
