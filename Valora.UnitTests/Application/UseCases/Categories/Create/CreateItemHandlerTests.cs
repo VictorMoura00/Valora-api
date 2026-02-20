@@ -7,7 +7,7 @@ using Valora.Domain.Entities;
 using Valora.Domain.Repositories;
 using Valora.UnitTests.Abstractions;
 
-namespace Valora.UnitTests.Application.UseCases.Items.Create;
+namespace Valora.UnitTests.Application.UseCases.Categories.Create;
 
 /// <summary>
 /// Testes unitários para o caso de uso de criação de categoria.

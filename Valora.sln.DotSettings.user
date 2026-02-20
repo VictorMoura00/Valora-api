@@ -7,5 +7,6 @@
     &lt;TestId&gt;xUnit::84391D2B-9DFB-4B4B-8059-8533C2F95F52::net10.0::Valora.UnitTests.Application.UseCases.Items.Create.CreateCategoryHandlerTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::84391D2B-9DFB-4B4B-8059-8533C2F95F52::net10.0::Valora.UnitTests.Application.UseCases.Items.Create.CreateCategoryValidatorTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::84391D2B-9DFB-4B4B-8059-8533C2F95F52::net10.0::Valora.UnitTests.Infra.Repositories.CategoryRepositoryTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::84391D2B-9DFB-4B4B-8059-8533C2F95F52::net10.0::Valora.UnitTests.Application.UseCases.Categories.GetById.GetCategoryByIdHandlerTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

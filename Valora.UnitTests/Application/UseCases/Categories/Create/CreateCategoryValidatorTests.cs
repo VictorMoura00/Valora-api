@@ -3,7 +3,7 @@ using Valora.Application.UseCases.Categories.Create;
 using Valora.Domain.Entities;
 using Valora.UnitTests.Abstractions;
 
-namespace Valora.UnitTests.Application.UseCases.Items.Create;
+namespace Valora.UnitTests.Application.UseCases.Categories.Create;
 
 /// <summary>
 /// Testes unitários para as regras de validação de criação de categoria.
