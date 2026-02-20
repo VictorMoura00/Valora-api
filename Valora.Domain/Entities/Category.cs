@@ -4,21 +4,40 @@ using Valora.Domain.Common.Abstractions;
 
 namespace Valora.Domain.Entities;
 
-public class Category(string name, string description) : Entity, IAggregateRoot
+public class Category : Entity, IAggregateRoot
 {
-    public string Name { get; private set; } = name;
-    public string Description { get; private set; } = description;
-    
-    public List<FieldDefinition> Schema { get; private set; } = [];
+    private readonly List<FieldDefinition> _schema = [];
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public IReadOnlyCollection<FieldDefinition> Schema => _schema.AsReadOnly();
+
+    public Category(string name, string description)
+    {
+        // DRY: Reutilizando as validações e atribuições
+        Update(name, description);
+    }
+
+    public void Update(string name, string description)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(description);
+
+        Name = name;
+        Description = description;
+
+        SetUpdated();
+    }
 
     public void AddField(string name, FieldType type, bool required = false)
     {
-        if (Schema.Exists(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
-        {
-            return; 
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        Schema.Add(new FieldDefinition(name, type, required));
+        if (_schema.Exists(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException($"O campo '{name}' já existe no schema desta categoria.");
+
+        _schema.Add(new FieldDefinition(name, type, required));
+
+        SetUpdated();
     }
 }
 

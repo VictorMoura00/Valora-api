@@ -1,11 +1,12 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 using Valora.Api.Controllers.Abstractions;
 using Valora.Application.UseCases.Categories.Create;
 using Valora.Application.UseCases.Categories.GetById;
 using Valora.Application.UseCases.Categories.List;
+using Valora.Application.UseCases.Categories.Update;
 using Valora.Domain.Common.Results;
 using Wolverine;
 
@@ -53,5 +54,27 @@ public class CategoriesController(IMessageBus _bus) : ApiController
         var result = await _bus.InvokeAsync<Result<PaginatedList<CategoryResponse>>>(query);
 
         return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Inconsistência de Dados",
+                Detail = "O ID da rota não coincide com o ID do corpo da requisição."
+            });
+
+        var result = await _bus.InvokeAsync<Result>(command);
+
+        if (result.IsFailure)
+            return HandleFailure(result);
+
+        return NoContent();
     }
 }
