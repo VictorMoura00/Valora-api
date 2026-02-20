@@ -23,8 +23,8 @@ Por exemplo: a categoria *'Filmes'* define que os itens avaliados sob ela terão
 
 ### ✍️ Comandos (Escrita - Alteram o estado)
 - [x] **CreateCategoryCommand**: Cria uma nova categoria junto com a definição inicial do seu formulário dinâmico (`Schema`).
-- [ ] **UpdateCategoryCommand**: Atualiza os dados básicos da categoria (como `Name` e `Description`).
-- [ ] **UpdateCategorySchemaCommand**: Separa a responsabilidade de editar os campos dinâmicos (adicionar/remover/editar itens do `Schema`) da edição dos dados básicos. Isso aplica o SRP e evita sobreposição ou perda de dados acidental.
+- [X] **UpdateCategoryCommand**: Atualiza os dados básicos da categoria (como `Name` e `Description`).
+- [X] **UpdateCategorySchemaCommand**: Separa a responsabilidade de editar os campos dinâmicos (adicionar/remover/editar itens do `Schema`) da edição dos dados básicos. Isso aplica o SRP e evita sobreposição ou perda de dados acidental.
 - [ ] **DeleteCategoryCommand**: Exclui uma categoria aplicando o Soft Delete (`entity.Delete()`).
 
 ### 📖 Consultas (Leitura - Não alteram o estado)
