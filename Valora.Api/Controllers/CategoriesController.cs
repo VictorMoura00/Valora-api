@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Valora.Api.Controllers.Abstractions;
 using Valora.Application.UseCases.Categories.Create;
 using Valora.Application.UseCases.Categories.GetById;
+using Valora.Application.UseCases.Categories.List;
 using Valora.Domain.Common.Results;
 using Wolverine;
 
@@ -22,9 +23,7 @@ public class CategoriesController(IMessageBus _bus) : ApiController
         var result = await _bus.InvokeAsync<Result<Guid>>(command);
 
         if (result.IsFailure)
-        {
             return HandleFailure(result);
-        }
 
         return CreatedAtAction(
             nameof(GetById),
@@ -41,6 +40,17 @@ public class CategoriesController(IMessageBus _bus) : ApiController
         var query = new GetCategoryByIdQuery(id);
         
         var result = await _bus.InvokeAsync<Result<CategoryResponse>>(query);
+
+        return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(PaginatedList<CategoryResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        var query = new ListCategoriesQuery(page, pageSize);
+        
+        var result = await _bus.InvokeAsync<Result<PaginatedList<CategoryResponse>>>(query);
 
         return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
     }
