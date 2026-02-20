@@ -1,14 +1,32 @@
+# docker compose -f compose.dev.yaml up -d
 services:
   mongo:
     image: mongo:8.2.5-noble
     container_name: valora-mongo-dev
     restart: always
+    # O comando abaixo ativa o Replica Set (rs0) necessário para as transações do UnitOfWork
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data-dev:/data/db # Volume persistente para não perder dados ao reiniciar
+      - mongo-data-dev:/data/db
 
-  # Interface Visual
+  # Contêiner efêmero de setup. Ele espera o Mongo subir, roda o script e desliga.
+  mongo-setup:
+    image: mongo:8.2.5-noble
+    container_name: valora-mongo-setup
+    depends_on:
+      - mongo
+    volumes:
+      - ./scripts:/scripts # Mapeia a pasta local ./scripts para dentro do contêiner
+    command: >
+      bash -c "
+        echo 'Aguardando o MongoDB iniciar...'
+        until mongosh --host mongo:27017 --eval 'print(\"Conectado!\")' --quiet; do sleep 2; done;
+        echo 'Executando script de setup inicial...'
+        mongosh --host mongo:27017 /scripts/setup.js;
+      "
+
   mongo-express:
     image: mongo-express
     container_name: valora-mongo-ui
