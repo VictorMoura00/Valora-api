@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Valora.Domain.Common.Pagination;
 
-namespace Valora.Application.Extensions;
+namespace Valora.Infra.Extensions;
 
 
 public static class MongoPaginationExtensions

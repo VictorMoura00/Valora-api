@@ -7,6 +7,7 @@ using Valora.Domain.Common.Abstractions;
 using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Common.Pagination;
 using Valora.Infra.Context;
+using Valora.Infra.Extensions;
 
 namespace Valora.Infra.Repositories;
 
@@ -21,56 +22,57 @@ public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggr
         _context = context;
     }
 
+    protected FilterDefinition<T> ActiveOnlyFilter => Builders<T>.Filter.Eq(e => e.IsDeleted, false);
+
     public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _collection
-            .Find(x => x.Id == id && !x.IsDeleted)
-            .FirstOrDefaultAsync();
+        var idFilter = Builders<T>.Filter.Eq(e => e.Id, id);
+        var combinedFilter = Builders<T>.Filter.And(idFilter, ActiveOnlyFilter);
+
+        return await _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken);
     }
 
     public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _collection
-            .Find(x => !x.IsDeleted)
-            .ToListAsync();
+        return await _collection.Find(ActiveOnlyFilter).ToListAsync(cancellationToken);
     }
 
     public virtual Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _context.AddCommand(() => _collection.InsertOneAsync(entity));
+        _context.AddCommand(() => _collection.InsertOneAsync(entity, cancellationToken: cancellationToken));
         return Task.CompletedTask;
     }
 
     public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _context.AddCommand(() => _collection.ReplaceOneAsync(x => x.Id == entity.Id, entity));
+        var idFilter = Builders<T>.Filter.Eq(e => e.Id, entity.Id);
+
+        _context.AddCommand(() => _collection.ReplaceOneAsync(idFilter, entity, cancellationToken: cancellationToken));
         return Task.CompletedTask;
     }
 
     public virtual Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        _context.AddCommand(async () => 
-        {
-            var entity = await GetByIdAsync(id);
-            if (entity != null)
-            {
-                entity.Delete();
-                await _collection.ReplaceOneAsync(x => x.Id == id, entity);
-            }
-        });
-        
+        var idFilter = Builders<T>.Filter.Eq(e => e.Id, id);
+
+        var updateDefinition = Builders<T>.Update
+            .Set(e => e.IsDeleted, true)
+            .Set(e => e.UpdatedAt, DateTime.UtcNow);
+
+        _context.AddCommand(() => _collection.UpdateOneAsync(idFilter, updateDefinition, cancellationToken: cancellationToken));
         return Task.CompletedTask;
     }
-    
-    public virtual async Task<PaginatedList<T>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken)
-    {
-        var filter = Builders<T>.Filter.Eq(x => x.IsDeleted, false);
-        var count = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
-        var items = await _collection.Find(filter)
-            .Skip((page - 1) * pageSize)
-            .Limit(pageSize)
-            .ToListAsync(cancellationToken);
 
-        return new PaginatedList<T>(items, count, page, pageSize);
+    public virtual async Task<PaginatedList<T>> GetPaginatedAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        return await _collection.ToPaginatedListAsync(
+            filter: ActiveOnlyFilter,
+            pageNumber: page,
+            pageSize: pageSize,
+            sort: null,
+            cancellationToken: cancellationToken);
     }
 }

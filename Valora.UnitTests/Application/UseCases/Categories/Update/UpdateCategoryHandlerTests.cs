@@ -8,7 +8,7 @@ using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Entities;
 using Valora.Domain.Repositories;
 
-namespace Valora.UnitTests.Application.UseCases.Categories;
+namespace Valora.UnitTests.Application.UseCases.Categories.Update;
 
 public class UpdateCategoryHandlerTests
 {
