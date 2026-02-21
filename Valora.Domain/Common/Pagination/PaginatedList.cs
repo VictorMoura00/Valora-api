@@ -1,40 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Valora.Domain.Common.Pagination;
 
-public class PaginatedList<T>
+public class PaginatedList<T>(IEnumerable<T> items, long count, int pageNumber, int pageSize)
 {
-    public IReadOnlyCollection<T> Items { get; }
-    public int PageNumber { get; }
-    public int PageSize { get; }
-    public long TotalCount { get; }
-    public int TotalPages { get; }
+    public IReadOnlyCollection<T> Items { get; } = items.ToList().AsReadOnly();
+    public int PageNumber { get; } = pageNumber;
+    public int PageSize { get; } = pageSize;
+    public long TotalCount { get; } = count;
+    
+    public int TotalPages { get; } = pageSize > 0 ? (int)Math.Ceiling(count / (double)pageSize) : 0;
+
     public bool HasPreviousPage => PageNumber > 1;
     public bool HasNextPage => PageNumber < TotalPages;
-
-    public PaginatedList(IEnumerable<T> items, long count, int pageNumber, int pageSize)
-    {
-        Items = items.ToList().AsReadOnly();
-        TotalCount = count;
-        PageNumber = pageNumber;
-        PageSize = pageSize;
-        TotalPages = pageSize > 0 ? (int)Math.Ceiling(count / (double)pageSize) : 0;
-    }
 
     /// <summary>
     /// Transforma uma lista paginada de Entidades em uma lista paginada de DTOs.
     /// <example>
-    /// <br>Como chamar o m�todo Map para converter uma lista paginada de categorias em uma lista paginada de CategoryDto:</br>
+    /// <br>Como chamar o método Map para converter uma lista paginada de categorias em uma lista paginada de CategoryDto:</br>
     /// <code>
-    /// var response = pagedCategories.Map(c => new CategoryDto(c.Id, c.Name));
+    /// var response = pagedCategories.Map(c => new Categor'yDto(c.Id, c.Name));
     /// </code>
     /// </example>
     /// </summary>
     public PaginatedList<TResult> Map<TResult>(Func<T, TResult> mapFunc)
     {
-        var mappedItems = Items.Select(mapFunc).ToList();
+        // O próprio construtor primário já cuida do .ToList().AsReadOnly()
+        var mappedItems = Items.Select(mapFunc);
         return new PaginatedList<TResult>(mappedItems, TotalCount, PageNumber, PageSize);
     }
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Valora.Domain.Common.Abstractions;
 using Valora.Domain.Common.Results;
 
@@ -24,10 +22,10 @@ public class Category : Entity, IAggregateRoot
     public Result Update(string name, string description)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure(Error.Validation("Category.InvalidName", "O nome da categoria n„o pode ser vazio."));
+            return Result.Failure(Error.Validation("Category.InvalidName", "O nome da categoria n√£o pode ser vazio."));
 
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure(Error.Validation("Category.InvalidDescription", "A descriÁ„o n„o pode ser vazia."));
+            return Result.Failure(Error.Validation("Category.InvalidDescription", "A descri√ß√£o n√£o pode ser vazia."));
 
         Name = name;
         Description = description;
@@ -40,12 +38,12 @@ public class Category : Entity, IAggregateRoot
     public Result AddField(string name, FieldType type, bool required = false)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo n„o pode ser vazio."));
+            return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo n√£o pode ser vazio."));
 
         if (_schema.Exists(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
             return Result.Failure(Error.Conflict(
                 "Category.DuplicateField",
-                $"O campo '{name}' j· existe no schema desta categoria."));
+                $"O campo '{name}' j√° existe no schema desta categoria."));
 
         _schema.Add(new FieldDefinition(name, type, required));
 
@@ -54,7 +52,6 @@ public class Category : Entity, IAggregateRoot
         return Result.Success();
     }
 
-
     public Result ReplaceSchema(IEnumerable<FieldDefinition> newFields)
     {
         var tempSchema = new List<FieldDefinition>();
@@ -62,12 +59,12 @@ public class Category : Entity, IAggregateRoot
         foreach (var field in newFields)
         {
             if (string.IsNullOrWhiteSpace(field.Name))
-                return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo n„o pode ser vazio."));
+                return Result.Failure(Error.Validation("Category.InvalidFieldName", "O nome do campo n√£o pode ser vazio."));
 
             if (tempSchema.Exists(x => x.Name.Equals(field.Name, StringComparison.OrdinalIgnoreCase)))
                 return Result.Failure(Error.Conflict(
                     "Category.DuplicateField",
-                    $"O campo '{field.Name}' est· duplicado na nova lista de schema."));
+                    $"O campo '{field.Name}' est√° duplicado na nova lista de schema."));
 
             tempSchema.Add(field);
         }
@@ -80,7 +77,6 @@ public class Category : Entity, IAggregateRoot
         return Result.Success();
     }
 }
-
 
 public record FieldDefinition(string Name, FieldType Type, bool IsRequired);
 

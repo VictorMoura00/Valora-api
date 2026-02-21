@@ -23,14 +23,14 @@ Por exemplo: a categoria *'Filmes'* define que os itens avaliados sob ela terão
 
 ### ✍️ Comandos (Escrita - Alteram o estado)
 - [x] **CreateCategoryCommand**: Cria uma nova categoria junto com a definição inicial do seu formulário dinâmico (`Schema`).
-- [X] **UpdateCategoryCommand**: Atualiza os dados básicos da categoria (como `Name` e `Description`).
-- [X] **UpdateCategorySchemaCommand**: Separa a responsabilidade de editar os campos dinâmicos (adicionar/remover/editar itens do `Schema`) da edição dos dados básicos. Isso aplica o SRP e evita sobreposição ou perda de dados acidental.
-- [ ] **DeleteCategoryCommand**: Exclui uma categoria aplicando o Soft Delete (`entity.Delete()`).
+- [x] **UpdateCategoryCommand**: Atualiza os dados básicos da categoria (como `Name` e `Description`).
+- [x] **UpdateCategorySchemaCommand**: Separa a responsabilidade de editar os campos dinâmicos (adicionar/remover/editar itens do `Schema`) da edição dos dados básicos. Isso aplica o SRP e evita sobreposição ou perda de dados acidental.
+- [x] **DeleteCategoryCommand**: Exclui uma categoria aplicando o Soft Delete (`entity.Delete()`).
 
 ### 📖 Consultas (Leitura - Não alteram o estado)
 - [x] **GetCategoryByIdQuery**: Traz todos os detalhes de uma categoria específica, incluindo seu `Schema` completo para a tela de edição ou visualização detalhada.
 - [x] **ListCategoriesQuery**: Traz a lista paginada de categorias ativas, ideal para montar grids ou tabelas de administração com metadados de paginação (`TotalPages`, `TotalCount`, etc).
-- [ ] **GetCategoryOptionsQuery**: Uma query extremamente leve focada no Frontend. Retorna uma lista não-paginada contendo apenas `Id` e `Name`. Serve estritamente para popular Dropdowns/ComboBoxes.
+- [x] **GetCategoryOptionsQuery**: Uma query extremamente leve focada no Frontend. Retorna uma lista não-paginada contendo apenas `Id` e `Name`. Serve estritamente para popular Dropdowns/ComboBoxes.
 
 ## 📡 Eventos Produzidos (Integração)
 *(Eventos disparados via Service Bus / Wolverine após o sucesso das transações)*
