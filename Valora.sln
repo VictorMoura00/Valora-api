@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A3216F85-56C9-46CA-9D0E-D94ED986759B}"
 	ProjectSection(SolutionItems) = preProject
 		categories.md = categories.md
+		items.md = items.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{43F040B9-6F40-4EDD-B3D7-C35B258B0019}"
