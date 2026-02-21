@@ -1,50 +1,62 @@
-using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Valora.Domain.Common.Abstractions;
-using Valora.Domain.Common.Exceptions;
+using Valora.Domain.Common.Results;
 
 namespace Valora.Domain.Entities;
 
 public class Item : Entity, IAggregateRoot
 {
     public Guid CategoryId { get; private set; }
-    public Dictionary<string, object> Data { get; private set; }
-    public decimal AverageRating { get; private set; }
-    public int ReviewCount { get; private set; }
+    public string Name { get; private set; }
+    private readonly Dictionary<string, object> _attributes = new(StringComparer.OrdinalIgnoreCase);
+    public IReadOnlyDictionary<string, object> Attributes => new ReadOnlyDictionary<string, object>(_attributes);
 
-    // Construtor principal (Para uso da Aplicação)
-    public Item(Guid categoryId, Dictionary<string, object> data)
+    public Item(Guid categoryId, string name)
     {
+        if (categoryId == Guid.Empty)
+            throw new ArgumentException("A categoria é obrigatória.", nameof(categoryId));
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
         CategoryId = categoryId;
-        Data = data;
-        AverageRating = 0;
-        ReviewCount = 0;
+        Name = name;
     }
 
-    // O MongoDB precisa que seja público para instanciar via Reflection sem configurações extras.
-    [Obsolete("Construtor utilizado apenas pelo ORM/Database")]
-    public Item() 
+    public Result UpdateName(string name)
     {
-        Data = new Dictionary<string, object>();
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Failure(Error.Validation("Item.InvalidName", "O nome do item não pode ser vazio."));
+
+        Name = name;
+        SetUpdated();
+
+        return Result.Success();
     }
 
-    public void ValidateAgainstSchema(Category category)
+    /// <summary>
+    /// Adiciona ou atualiza um atributo dinâmico do item.
+    /// A validação de se a 'key' existe no Schema da Categoria será feita pelo Handler/DomainService.
+    /// </summary>
+    public void SetAttribute(string key, object value)
     {
-        foreach (var field in category.Schema)
-        {
-            if (field.IsRequired && !Data.ContainsKey(field.Name))
-            {
-                throw new DomainException($"O campo '{field.Name}' é obrigatório para a categoria '{category.Name}'.");
-            }
-        }
+        if (string.IsNullOrWhiteSpace(key)) return;
+
+        if (value is null || (value is string str && string.IsNullOrWhiteSpace(str)))
+            _attributes.Remove(key);
+        else
+            _attributes[key] = value;
+
+        SetUpdated();
     }
 
-    public void UpdateRating(int newRatingValue)
+    /// <summary>
+    /// Substitui todos os atributos de uma vez (útil para formulários de edição).
+    /// </summary>
+    public void ReplaceAttributes(IDictionary<string, object> newAttributes)
     {
-        var totalScore = (AverageRating * ReviewCount) + newRatingValue;
-        ReviewCount++;
-        AverageRating = totalScore / ReviewCount;
-        
-        SetUpdated(); 
+        _attributes.Clear();
+
+        foreach (var attr in newAttributes)
+            SetAttribute(attr.Key, attr.Value);
     }
 }

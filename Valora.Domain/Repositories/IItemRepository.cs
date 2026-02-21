@@ -6,10 +6,14 @@ namespace Valora.Domain.Repositories;
 
 public interface IItemRepository : IRepository<Item>
 {
-    Task<PaginatedList<Item>> GetByCategoryAsync(
-        Guid? categoryId, 
-        int page, 
-        int pageSize, 
-        CancellationToken cancellationToken
-    );
+    Task<bool> ExistsByNameAsync(
+        string name,
+        Guid categoryId,
+        CancellationToken cancellationToken = default
+        );
+    Task<PaginatedList<Item>> GetPaginatedByCategoryAsync(
+        Guid categoryId,
+        int page, int pageSize,
+        CancellationToken cancellationToken = default
+        );
 }
