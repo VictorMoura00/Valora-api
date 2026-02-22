@@ -12,8 +12,14 @@ public interface IItemRepository : IRepository<Item>
         CancellationToken cancellationToken = default
         );
     Task<PaginatedList<Item>> GetPaginatedByCategoryAsync(
-        Guid categoryId,
+Guid categoryId,
         int page, int pageSize,
         CancellationToken cancellationToken = default
         );
+
+    Task<PaginatedList<Item>> SearchByNameAsync(
+        string searchTerm,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 }

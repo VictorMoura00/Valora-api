@@ -10,13 +10,9 @@ using Valora.Infra.Extensions;
 
 namespace Valora.Infra.Repositories;
 
-public class ItemRepository : BaseRepository<Item>, IItemRepository
+public class ItemRepository(IMongoDatabase database, MongoContext context)
+    : BaseRepository<Item>(database, context, "items"), IItemRepository
 {
-    public ItemRepository(IMongoDatabase database, MongoContext context)
-        : base(database, context, "items")
-    {
-    }
-
     public async Task<bool> ExistsByNameAsync(string name, Guid categoryId, CancellationToken cancellationToken = default)
     {
         var filter = Builders<Item>.Filter.And(
@@ -29,16 +25,37 @@ public class ItemRepository : BaseRepository<Item>, IItemRepository
         return await _collection.Find(filter).AnyAsync(cancellationToken);
     }
 
-    public async Task<PaginatedList<Item>> GetPaginatedByCategoryAsync(
-        Guid categoryId,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<Item>> GetPaginatedByCategoryAsync( Guid categoryId, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var filter = Builders<Item>.Filter.And(
             ActiveOnlyFilter,
             Builders<Item>.Filter.Eq(x => x.CategoryId, categoryId)
         );
+
+        return await _collection.ToPaginatedListAsync(
+            filter: filter,
+            pageNumber: page,
+            pageSize: pageSize,
+            sort: Builders<Item>.Sort.Ascending(x => x.Name),
+            cancellationToken: cancellationToken);
+    }
+
+    public async Task<PaginatedList<Item>> SearchByNameAsync(
+        string searchTerm,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var filter = ActiveOnlyFilter;
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var nameFilter = Builders<Item>.Filter.Regex(
+                x => x.Name,
+                new MongoDB.Bson.BsonRegularExpression(searchTerm, "i")); // "i" = ignore case
+
+            filter = Builders<Item>.Filter.And(filter, nameFilter);
+        }
 
         return await _collection.ToPaginatedListAsync(
             filter: filter,

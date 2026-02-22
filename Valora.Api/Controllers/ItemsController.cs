@@ -8,6 +8,7 @@ using Valora.Application.UseCases.Items.Create;
 using Valora.Application.UseCases.Items.Delete;
 using Valora.Application.UseCases.Items.GetById;
 using Valora.Application.UseCases.Items.ListByCategory;
+using Valora.Application.UseCases.Items.Search;
 using Valora.Application.UseCases.Items.Update;
 using Valora.Domain.Common.Pagination;
 using Valora.Domain.Common.Results;
@@ -93,6 +94,21 @@ public class ItemsController : ApiController
     {
         var query = new ListItemsByCategoryQuery(categoryId, pageNumber, pageSize);
         var result = await _bus.InvokeAsync<Result<PaginatedList<ItemSummaryDto>>>(query, cancellationToken);
+
+        return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
+    }
+
+    [HttpGet("search")]
+    [ProducesResponseType(typeof(PaginatedList<ItemSearchDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Search(
+        [FromQuery] string searchTerm,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new SearchItemsQuery(searchTerm, pageNumber, pageSize);
+
+        var result = await _bus.InvokeAsync<Result<PaginatedList<ItemSearchDto>>>(query, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
     }
