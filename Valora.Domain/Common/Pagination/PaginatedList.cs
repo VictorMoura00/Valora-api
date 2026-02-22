@@ -6,7 +6,7 @@ public class PaginatedList<T>(IEnumerable<T> items, long count, int pageNumber, 
     public int PageNumber { get; } = pageNumber;
     public int PageSize { get; } = pageSize;
     public long TotalCount { get; } = count;
-    
+
     public int TotalPages { get; } = pageSize > 0 ? (int)Math.Ceiling(count / (double)pageSize) : 0;
 
     public bool HasPreviousPage => PageNumber > 1;
@@ -23,7 +23,6 @@ public class PaginatedList<T>(IEnumerable<T> items, long count, int pageNumber, 
     /// </summary>
     public PaginatedList<TResult> Map<TResult>(Func<T, TResult> mapFunc)
     {
-        // O próprio construtor primário já cuida do .ToList().AsReadOnly()
         var mappedItems = Items.Select(mapFunc);
         return new PaginatedList<TResult>(mappedItems, TotalCount, PageNumber, PageSize);
     }
