@@ -1,16 +1,19 @@
-//using FluentValidation;
+using FluentValidation;
 
-//namespace Valora.Application.UseCases.Items.Create;
+namespace Valora.Application.UseCases.Items.Create;
 
-//public class CreateItemValidator : AbstractValidator<CreateItemCommand>
-//{
-//    public CreateItemValidator()
-//    {
-//        RuleFor(x => x.CategoryId)
-//            .NotEmpty().WithMessage("O ID da categoria é obrigatório.");
+public class CreateItemValidator : AbstractValidator<CreateItemCommand>
+{
+    public CreateItemValidator()
+    {
+        RuleFor(x => x.CategoryId)
+            .NotEmpty().WithMessage("O identificador da categoria é obrigatório.");
 
-//        RuleFor(x => x.Fields)
-//            .NotNull().WithMessage("Os campos do item são obrigatórios.")
-//            .Must(x => x.Count > 0).WithMessage("O item deve conter pelo menos um campo preenchido.");
-//    }
-//}
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("O nome do item é obrigatório.")
+            .MaximumLength(100).WithMessage("O nome do item deve ter no máximo 100 caracteres.");
+
+        RuleFor(x => x.Attributes)
+            .NotNull().WithMessage("A lista de atributos não pode ser nula.");
+    }
+}
