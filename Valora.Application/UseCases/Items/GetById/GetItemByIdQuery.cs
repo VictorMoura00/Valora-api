@@ -1,6 +1,6 @@
-//using MediatR;
-//using Valora.Domain.Common.Results;
+using System;
+using System.Collections.Generic;
 
-//namespace Valora.Application.UseCases.Items.GetById;
+namespace Valora.Application.UseCases.Items.GetById;
 
-//public record GetItemByIdQuery(Guid Id) : IRequest<Result<ItemResponse>>;
+public record GetItemByIdQuery(Guid Id);

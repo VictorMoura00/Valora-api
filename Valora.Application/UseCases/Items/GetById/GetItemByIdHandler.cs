@@ -1,32 +1,32 @@
-//using MediatR;
-//using Valora.Domain.Common.Results;
-//using Valora.Domain.Repositories;
+using System.Threading;
+using System.Threading.Tasks;
+using Valora.Domain.Common.Results;
+using Valora.Domain.Repositories;
 
-//namespace Valora.Application.UseCases.Items.GetById;
+namespace Valora.Application.UseCases.Items.GetById;
 
-//public class GetItemByIdHandler(
-//    IItemRepository _itemRepository, 
-//    ICategoryRepository _categoryRepository
-//) : IRequestHandler<GetItemByIdQuery, Result<ItemResponse>>
-//{
-//    public async Task<Result<ItemResponse>> Handle(GetItemByIdQuery request, CancellationToken cancellationToken)
-//    {
-//        var item = await _itemRepository.GetByIdAsync(request.Id);
+public static class GetItemByIdHandler
+{
+    public static async Task<Result<ItemDto>> Handle(
+        GetItemByIdQuery query,
+        IItemRepository itemRepository,
+        CancellationToken cancellationToken)
+    {
+        var item = await itemRepository.GetByIdAsync(query.Id, cancellationToken);
 
-//        if (item is null)
-//        {
-//            return Result.Failure<ItemResponse>(Error.NotFound("Item.NotFound", "Item não encontrado."));
-//        }
+        if (item is null)
+            return Result.Failure<ItemDto>(Error.NotFound(
+                "Item.NotFound",
+                $"O item com o ID '{query.Id}' não foi encontrado."));
 
-//        var category = await _categoryRepository.GetByIdAsync(item.CategoryId);
-//        var categoryName = category?.Name ?? "Desconhecida";
+        var dto = new ItemDto(
+            item.Id,
+            item.CategoryId,
+            item.Name,
+            item.Attributes,
+            item.CreatedAt,
+            item.UpdatedAt);
 
-//        return new ItemResponse(
-//            item.Id,
-//            item.CategoryId,
-//            categoryName,
-//            item.Data,
-//            item.AverageRating
-//        );
-//    }
-//}
+        return Result.Success(dto);
+    }
+}
