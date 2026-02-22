@@ -27,14 +27,14 @@ Por exemplo: se a categoria é *'Filmes'* (o molde), o item é *'O Senhor dos An
 *(Nota: Marcados com [ ] pois serão os próximos a serem desenvolvidos)*
 
 ### ✍️ Comandos (Escrita - Alteram o estado)
-- [ ] **CreateItemCommand**: Cria um novo item associado a uma categoria. O Handler validará os atributos enviados contra o Schema da Categoria.
-- [ ] **UpdateItemCommand**: Atualiza o nome ou os atributos dinâmicos do item. Também revalida os dados contra o Schema.
-- [ ] **DeleteItemCommand**: Exclui um item aplicando o Soft Delete (`entity.Delete()`).
+- [x] **CreateItemCommand**: Cria um novo item associado a uma categoria. O Handler validará os atributos enviados contra o Schema da Categoria.
+- [x] **UpdateItemCommand**: Atualiza o nome ou os atributos dinâmicos do item. Também revalida os dados contra o Schema.
+- [x] **DeleteItemCommand**: Exclui um item aplicando o Soft Delete (`entity.Delete()`).
 
 ### 📖 Consultas (Leitura - Não alteram o estado)
-- [ ] **GetItemByIdQuery**: Retorna os detalhes completos de um item específico, incluindo seus atributos dinâmicos.
-- [ ] **ListItemsByCategoryQuery**: Retorna a lista paginada de itens atrelados a uma `CategoryId` específica (usado ao entrar na página de uma Categoria).
-- [ ] **SearchItemsQuery**: Uma consulta global leve e paginada para buscar itens pelo `Name` (ideal para a barra de pesquisa principal do sistema).
+- [x] **GetItemByIdQuery**: Retorna os detalhes completos de um item específico, incluindo seus atributos dinâmicos.
+- [x] **ListItemsByCategoryQuery**: Retorna a lista paginada de itens atrelados a uma `CategoryId` específica (usado ao entrar na página de uma Categoria).
+- [x] **SearchItemsQuery**: Uma consulta global leve e paginada para buscar itens pelo `Name` (ideal para a barra de pesquisa principal do sistema).
 
 ## 📡 Eventos Produzidos (Integração)
 *(Eventos disparados via Service Bus / Wolverine após o sucesso das transações)*

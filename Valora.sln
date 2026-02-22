@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A3216F85-5
 	ProjectSection(SolutionItems) = preProject
 		categories.md = categories.md
 		items.md = items.md
+		Evaluation.md = Evaluation.md
+		User.md = User.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{43F040B9-6F40-4EDD-B3D7-C35B258B0019}"
