@@ -67,4 +67,11 @@ public record Error
     public static Error Conflict(string code, string description) => 
         new(code, description, ErrorType.Conflict);
 
+    /// <summary>
+    /// Cria um erro de autorização/autenticação (HTTP 401/403).
+    /// Use quando o usuário não enviar um token válido ou não tiver permissão.
+    /// </summary>
+    public static Error Unauthorized(string code, string description) =>
+        new(code, description, ErrorType.Unauthorized);
+
 }
