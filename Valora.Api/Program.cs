@@ -23,7 +23,6 @@ builder.Services.AddProjectDependencies(builder.Configuration); // Mapeiamento a
 builder.Services.AddApplication();
 builder.Services.AddCorsPolicy(builder.Configuration);          // Cors
 builder.Services.AddHttpContextAccessor(); // Libera o acesso ao contexto HTTP atual para as classes injetadas
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>(); // serviço de usuário
 
 var app = builder.Build();
 
