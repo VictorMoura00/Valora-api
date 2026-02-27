@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Valora.UnitTests.Common.Stub.ValueObjectStub;
+using Valora.UnitTests.Common.Stub.ValueObjectStubs;
 
 namespace Valora.UnitTests.Domain.Common.Abstractions;
 

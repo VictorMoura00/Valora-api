@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Valora.Api.Extensions;
+using Valora.Api.Service;
+using Valora.Application.Common.Interfaces;
 using Valora.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,8 @@ builder.Services.AddHealthMonitoring();                         // Health Checks
 builder.Services.AddProjectDependencies(builder.Configuration); // Mapeiamento automatico de implementação de interface
 builder.Services.AddApplication();
 builder.Services.AddCorsPolicy(builder.Configuration);          // Cors
+builder.Services.AddHttpContextAccessor(); // Libera o acesso ao contexto HTTP atual para as classes injetadas
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>(); // serviço de usuário
 
 var app = builder.Build();
 

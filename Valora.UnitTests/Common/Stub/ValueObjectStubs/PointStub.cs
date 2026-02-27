@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Valora.Domain.Common.Abstractions;
 
-namespace Valora.UnitTests.Common.Stub.ValueObjectStub;
+namespace Valora.UnitTests.Common.Stub.ValueObjectStubs;
 
 public class PointStub : ValueObject
 {
