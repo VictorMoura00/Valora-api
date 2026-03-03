@@ -1,14 +1,13 @@
 using FluentAssertions;
 using NSubstitute;
 using Valora.Application.Common.Interfaces;
-using Valora.Application.UseCases.User.SyncLogin;
 using Valora.Application.UseCases.Users.SyncLogin;
 using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Entities;
 using Valora.Domain.Repositories;
 
-namespace Valora.UnitTests.Application.UseCases.Users;
+namespace Valora.UnitTests.Application.UseCases.Users.SyncLogin;
 
 public class SyncUserLoginHandlerTests
 {

@@ -11,16 +11,12 @@ using Valora.Infra.Extensions;
 
 namespace Valora.Infra.Repositories;
 
-public abstract class BaseRepository<T> : IRepository<T> where T : Entity, IAggregateRoot
+public abstract class BaseRepository<T>(IMongoDatabase database, MongoContext context, string collectionName)
+    : IRepository<T>
+    where T : Entity, IAggregateRoot
 {
-    protected readonly IMongoCollection<T> _collection;
-    protected readonly MongoContext _context;
-
-    protected BaseRepository(IMongoDatabase database, MongoContext context, string collectionName)
-    {
-        _collection = database.GetCollection<T>(collectionName);
-        _context = context;
-    }
+    protected readonly IMongoCollection<T> _collection = database.GetCollection<T>(collectionName);
+    protected readonly MongoContext _context = context;
 
     protected FilterDefinition<T> ActiveOnlyFilter => Builders<T>.Filter.Eq(e => e.IsDeleted, false);
 

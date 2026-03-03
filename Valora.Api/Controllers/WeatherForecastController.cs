@@ -8,10 +8,9 @@ namespace Valora.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController(ILogger<WeatherForecastController> logger) : ControllerBase
 {
     // 1. Criamos um campo privado para armazenar o Logger
-    private readonly ILogger<WeatherForecastController> _logger;
 
     private static readonly string[] Summaries =
     [
@@ -19,10 +18,6 @@ public class WeatherForecastController : ControllerBase
     ];
 
     // 2. Injetamos o Logger via Construtor (O Serilog entra aqui automaticamente)
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
-    {
-        _logger = logger;
-    }
 
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
@@ -30,7 +25,7 @@ public class WeatherForecastController : ControllerBase
         // 3. Adicionamos um Log Estruturado
         // Diferente de string.Format, aqui usamos {Chaves}. 
         // O Serilog guarda "QuantidadeDias" como um dado pesquisável no JSON, e não apenas texto solto.
-        _logger.LogInformation("Gerando previsão do tempo para os próximos {QuantidadeDias} dias. Solicitado às {Hora}", 5, DateTime.Now.ToLongTimeString());
+        logger.LogInformation("Gerando previsão do tempo para os próximos {QuantidadeDias} dias. Solicitado às {Hora}", 5, DateTime.Now.ToLongTimeString());
 
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

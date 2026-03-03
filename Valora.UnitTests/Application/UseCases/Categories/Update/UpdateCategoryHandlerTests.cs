@@ -12,14 +12,8 @@ namespace Valora.UnitTests.Application.UseCases.Categories.Update;
 
 public class UpdateCategoryHandlerTests
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateCategoryHandlerTests()
-    {
-        _categoryRepository = Substitute.For<ICategoryRepository>();
-        _unitOfWork = Substitute.For<IUnitOfWork>();
-    }
+    private readonly ICategoryRepository _categoryRepository = Substitute.For<ICategoryRepository>();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
 
     [Fact]
     public async Task Handle_DeveRetornarFalha_QuandoCategoriaNaoExistir()

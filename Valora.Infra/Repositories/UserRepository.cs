@@ -8,13 +8,9 @@ using Valora.Infra.Context;
 
 namespace Valora.Infra.Repositories;
 
-public class UserRepository : BaseRepository<User>, IUserRepository
+public class UserRepository(IMongoDatabase database, MongoContext context)
+    : BaseRepository<User>(database, context, "users"), IUserRepository
 {
-    public UserRepository(IMongoDatabase database, MongoContext context)
-        : base(database, context, "users")
-    {
-    }
-
     public async Task<bool> IsNicknameTakenAsync(
         string nickname,
         Guid? excludeUserId = null,

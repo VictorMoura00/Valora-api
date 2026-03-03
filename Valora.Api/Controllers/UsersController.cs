@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using Valora.Api.Controllers.Abstractions;
-using Valora.Application.UseCases.User.SyncLogin;
 using Valora.Application.UseCases.Users.SyncLogin;
+using Valora.Application.UseCases.Users.UpdateProfile;
 using Valora.Domain.Common.Results;
 using Wolverine;
 
@@ -13,35 +13,34 @@ namespace Valora.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ApiController
+public class UsersController(IMessageBus bus) : ApiController
 {
-    private readonly IMessageBus _bus;
-
-    public UsersController(IMessageBus bus)
-    {
-        _bus = bus;
-    }
-
-    /// <summary>
-    /// Sincroniza o login do Identity Provider com o banco de dados local.
-    /// Deve ser chamado pelo Front-End logo após o usuário realizar o login com sucesso.
-    /// </summary>
     [HttpPost("sync")]
-    [Authorize] // Garante que apenas requisições com JWT válido do Auth0 entrem aqui
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> SyncLogin(CancellationToken cancellationToken)
     {
         var command = new SyncUserLoginCommand();
 
-        var result = await _bus.InvokeAsync<Result>(command, cancellationToken);
+        var result = await bus.InvokeAsync<Result>(command, cancellationToken);
 
-        if (result.IsFailure)
-        {
-            // Substitua por HandleFailure(result) se você usar uma BaseController
-            return HandleFailure(result);
-        }
+        return result.IsFailure ? HandleFailure(result) : Ok();
+    }
 
-        return Ok();
+    [HttpPut("me/profile")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateProfile(
+        [FromBody] UpdateProfileCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await bus.InvokeAsync<Result>(command, cancellationToken);
+
+        return result.IsFailure ? HandleFailure(result) : NoContent();
     }
 }

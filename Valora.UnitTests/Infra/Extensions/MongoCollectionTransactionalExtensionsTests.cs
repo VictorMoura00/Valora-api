@@ -5,22 +5,16 @@ using FluentAssertions;
 using MongoDB.Driver;
 using NSubstitute;
 using Valora.Infra.Extensions;
+using Valora.UnitTests.Common.Stub.EntityStubs;
 using Xunit;
 
 namespace Valora.UnitTests.Infra.Extensions;
 
 public class MongoCollectionTransactionalExtensionsTests
 {
-    private readonly IMongoCollection<EntityStub> _collectionMock;
-    private readonly IClientSessionHandle _sessionMock;
-    private readonly EntityStub _document;
-
-    public MongoCollectionTransactionalExtensionsTests()
-    {
-        _collectionMock = Substitute.For<IMongoCollection<EntityStub>>();
-        _sessionMock = Substitute.For<IClientSessionHandle>();
-        _document = new EntityStub();
-    }
+    private readonly IMongoCollection<EntityStub> _collectionMock = Substitute.For<IMongoCollection<EntityStub>>();
+    private readonly IClientSessionHandle _sessionMock = Substitute.For<IClientSessionHandle>();
+    private readonly EntityStub _document = new();
 
     [Fact(DisplayName = "InsertOneTransactional deve usar a sobrecarga COM sessão quando a sessão for informada")]
     public async Task InsertOneTransactional_Should_UseSession_WhenSessionIsProvided()

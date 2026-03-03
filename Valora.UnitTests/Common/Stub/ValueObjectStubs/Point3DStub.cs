@@ -5,18 +5,11 @@ using Valora.Domain.Common.Abstractions;
 
 namespace Valora.UnitTests.Common.Stub.ValueObjectStubs;
 
-public class Point3DStub : ValueObject
+public class Point3DStub(int x, int y, int z) : ValueObject
 {
-    public int X { get; }
-    public int Y { get; }
-    public int Z { get; }
-
-    public Point3DStub(int x, int y, int z)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
+    public int X { get; } = x;
+    public int Y { get; } = y;
+    public int Z { get; } = z;
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {

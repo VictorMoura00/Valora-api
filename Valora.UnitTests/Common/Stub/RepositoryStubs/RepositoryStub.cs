@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using Valora.Infra.Context;
 using Valora.Infra.Repositories;
+using Valora.UnitTests.Common.Stub.EntityStubs;
 
 namespace Valora.UnitTests.Common.Stub.RepositoryStubs;
 
-public class RepositoryStub : BaseRepository<EntityStub>
-{
-    public RepositoryStub(IMongoDatabase database, MongoContext context)
-        : base(database, context, "test_collection")
-    {
-    }
-}
+public class RepositoryStub(IMongoDatabase database, MongoContext context)
+    : BaseRepository<EntityStub>(database, context, "test_collection");

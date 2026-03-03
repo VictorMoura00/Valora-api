@@ -13,14 +13,8 @@ namespace Valora.UnitTests.Application.UseCases.Items.Delete;
 
 public class DeleteItemHandlerTests
 {
-    private readonly IItemRepository _itemRepositoryMock;
-    private readonly IUnitOfWork _unitOfWorkMock;
-
-    public DeleteItemHandlerTests()
-    {
-        _itemRepositoryMock = Substitute.For<IItemRepository>();
-        _unitOfWorkMock = Substitute.For<IUnitOfWork>();
-    }
+    private readonly IItemRepository _itemRepositoryMock = Substitute.For<IItemRepository>();
+    private readonly IUnitOfWork _unitOfWorkMock = Substitute.For<IUnitOfWork>();
 
     [Fact(DisplayName = "Deve retornar falha (NotFound) quando o item não existir")]
     public async Task Handle_Should_ReturnFailure_WhenItemDoesNotExist()

@@ -21,15 +21,8 @@ public static class ExceptionHandlerExtensions
 }
 
 // Classe interna para lógica de tratamento
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-    private readonly ILogger<GlobalExceptionHandler> _logger;
-
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
@@ -59,7 +52,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         }
 
         // 2. Comportamento Padrão (Erro 500)
-        _logger.LogError(exception, "Erro não tratado: {Message}", exception.Message);
+        logger.LogError(exception, "Erro não tratado: {Message}", exception.Message);
 
         var problemDetails = new ProblemDetails
         {

@@ -14,14 +14,8 @@ namespace Valora.UnitTests.Application.UseCases.Categories.Delete;
 
 public class DeleteCategoryHandlerTests
 {
-    private readonly ICategoryRepository _categoryRepositoryMock;
-    private readonly IUnitOfWork _unitOfWorkMock;
-
-    public DeleteCategoryHandlerTests()
-    {
-        _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _unitOfWorkMock = Substitute.For<IUnitOfWork>();
-    }
+    private readonly ICategoryRepository _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+    private readonly IUnitOfWork _unitOfWorkMock = Substitute.For<IUnitOfWork>();
 
     [Fact(DisplayName = "Deve retornar falha (NotFound) quando a categoria não existir")]
     public async Task Handle_Should_ReturnFailure_WhenCategoryDoesNotExist()

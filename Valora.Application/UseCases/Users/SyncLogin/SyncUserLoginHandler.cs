@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Valora.Application.Common.Interfaces;
-using Valora.Application.UseCases.User.SyncLogin;
 using Valora.Domain.Common.Interfaces;
 using Valora.Domain.Common.Results;
 using Valora.Domain.Entities;

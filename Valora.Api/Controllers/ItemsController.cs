@@ -17,15 +17,8 @@ using Wolverine;
 namespace Valora.Api.Controllers;
 
 [Route("api/items")]
-public class ItemsController : ApiController
+public class ItemsController(IMessageBus bus) : ApiController
 {
-    private readonly IMessageBus _bus;
-
-    public ItemsController(IMessageBus bus)
-    {
-        _bus = bus;
-    }
-
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -35,7 +28,7 @@ public class ItemsController : ApiController
         [FromBody] CreateItemCommand command,
         CancellationToken cancellationToken)
     {
-        var result = await _bus.InvokeAsync<Result<Guid>>(command, cancellationToken);
+        var result = await bus.InvokeAsync<Result<Guid>>(command, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result)
             : CreatedAtAction(nameof(GetById), new { id = result.Value }, result.Value);
@@ -48,7 +41,7 @@ public class ItemsController : ApiController
     {
         var query = new GetItemByIdQuery(id);
 
-        var result = await _bus.InvokeAsync<Result<ItemDto>>(query, cancellationToken);
+        var result = await bus.InvokeAsync<Result<ItemDto>>(query, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result)
             : Ok(result.Value);
@@ -65,7 +58,7 @@ public class ItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var commandWithId = command with { Id = id };
-        var result = await _bus.InvokeAsync<Result<Guid>>(command, cancellationToken);
+        var result = await bus.InvokeAsync<Result<Guid>>(command, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result)
             : NoContent();
@@ -78,7 +71,7 @@ public class ItemsController : ApiController
     {
         var command = new DeleteItemCommand(id);
 
-        var result = await _bus.InvokeAsync<Result>(command, cancellationToken);
+        var result = await bus.InvokeAsync<Result>(command, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : NoContent();
     }
@@ -93,7 +86,7 @@ public class ItemsController : ApiController
         CancellationToken cancellationToken = default)
     {
         var query = new ListItemsByCategoryQuery(categoryId, pageNumber, pageSize);
-        var result = await _bus.InvokeAsync<Result<PaginatedList<ItemSummaryDto>>>(query, cancellationToken);
+        var result = await bus.InvokeAsync<Result<PaginatedList<ItemSummaryDto>>>(query, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
     }
@@ -108,7 +101,7 @@ public class ItemsController : ApiController
     {
         var query = new SearchItemsQuery(searchTerm, pageNumber, pageSize);
 
-        var result = await _bus.InvokeAsync<Result<PaginatedList<ItemSearchDto>>>(query, cancellationToken);
+        var result = await bus.InvokeAsync<Result<PaginatedList<ItemSearchDto>>>(query, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
     }

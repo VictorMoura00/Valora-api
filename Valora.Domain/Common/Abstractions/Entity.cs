@@ -4,17 +4,10 @@ namespace Valora.Domain.Common.Abstractions;
 
 public abstract class Entity : IEquatable<Entity>
 {
-    public Guid Id { get; protected set; }
-    public DateTimeOffset CreatedAt { get; protected set; }
+    public Guid Id { get; protected set; } = Guid.NewGuid();
+    public DateTimeOffset CreatedAt { get; protected set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? UpdatedAt { get; protected set; }
-    public bool IsDeleted { get; protected set; }
-
-    protected Entity()
-    {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTimeOffset.UtcNow;
-        IsDeleted = false;
-    }
+    public bool IsDeleted { get; protected set; } = false;
 
     protected void SetUpdated()
     {

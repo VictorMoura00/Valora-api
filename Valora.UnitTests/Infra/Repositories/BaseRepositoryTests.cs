@@ -5,6 +5,7 @@ using FluentAssertions;
 using MongoDB.Driver;
 using NSubstitute;
 using Valora.Infra.Context;
+using Valora.UnitTests.Common.Stub.EntityStubs;
 using Valora.UnitTests.Common.Stub.RepositoryStubs; 
 using Xunit;
 

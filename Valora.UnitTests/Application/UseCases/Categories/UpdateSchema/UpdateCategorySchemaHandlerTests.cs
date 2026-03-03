@@ -15,14 +15,8 @@ namespace Valora.UnitTests.Application.UseCases.Categories.UpdateSchema;
 
 public class UpdateCategorySchemaHandlerTests
 {
-    private readonly ICategoryRepository _categoryRepositoryMock;
-    private readonly IUnitOfWork _unitOfWorkMock;
-
-    public UpdateCategorySchemaHandlerTests()
-    {
-        _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _unitOfWorkMock = Substitute.For<IUnitOfWork>();
-    }
+    private readonly ICategoryRepository _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+    private readonly IUnitOfWork _unitOfWorkMock = Substitute.For<IUnitOfWork>();
 
     [Fact(DisplayName = "Deve retornar falha (NotFound) quando a categoria não existir")]
     public async Task Handle_Should_ReturnFailure_WhenCategoryDoesNotExist()
