@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using Valora.Api.Controllers.Abstractions;
+using Valora.Application.UseCases.Users.GetProfile;
 using Valora.Application.UseCases.Users.SyncLogin;
 using Valora.Application.UseCases.Users.UpdateProfile;
 using Valora.Domain.Common.Results;
@@ -13,7 +14,7 @@ namespace Valora.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IMessageBus bus) : ApiController
+public class UsersController(IMessageBus _bus) : ApiController
 {
     [HttpPost("sync")]
     [Authorize]
@@ -23,7 +24,7 @@ public class UsersController(IMessageBus bus) : ApiController
     {
         var command = new SyncUserLoginCommand();
 
-        var result = await bus.InvokeAsync<Result>(command, cancellationToken);
+        var result = await _bus.InvokeAsync<Result>(command, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : Ok();
     }
@@ -39,8 +40,27 @@ public class UsersController(IMessageBus bus) : ApiController
         [FromBody] UpdateProfileCommand command,
         CancellationToken cancellationToken)
     {
-        var result = await bus.InvokeAsync<Result>(command, cancellationToken);
+        var result = await _bus.InvokeAsync<Result>(command, cancellationToken);
 
         return result.IsFailure ? HandleFailure(result) : NoContent();
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetMyProfile(CancellationToken cancellationToken)
+    {
+        var query = new GetLoggedUserProfileQuery();
+
+        var result = await _bus.InvokeAsync<Result<UserProfileResponse>>(query, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return HandleFailure(result);
+        }
+
+        return Ok(result.Value);
     }
 }

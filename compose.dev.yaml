@@ -18,7 +18,7 @@ services:
     depends_on:
       - mongo
     volumes:
-      - ./scripts:/scripts # Mapeia a pasta local ./scripts para dentro do contêiner
+      - ./scripts:/scripts:z # Mapeia a pasta local ./scripts para dentro do contêiner
     command: >
       bash -c "
         echo 'Aguardando o MongoDB iniciar...'
