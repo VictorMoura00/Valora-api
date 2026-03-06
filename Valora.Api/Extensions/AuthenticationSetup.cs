@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Valora.Api.Service;
 using Valora.Application.Common.Interfaces;
 
@@ -8,12 +10,16 @@ public static class AuthenticationSetup
 {
     public static IServiceCollection AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = configuration["Auth0:Domain"];
-                options.Audience = configuration["Auth0:Audience"];
-            });
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.Authority = configuration["Auth0:Domain"];
+            options.Audience = configuration["Auth0:Audience"];
+        });
 
         services.AddAuthorization();
 
