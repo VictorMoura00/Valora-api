@@ -56,11 +56,6 @@ public class UsersController(IMessageBus _bus) : ApiController
 
         var result = await _bus.InvokeAsync<Result<UserProfileResponse>>(query, cancellationToken);
 
-        if (result.IsFailure)
-        {
-            return HandleFailure(result);
-        }
-
-        return Ok(result.Value);
+        return result.IsFailure ? HandleFailure(result) : Ok(result.Value);
     }
 }
