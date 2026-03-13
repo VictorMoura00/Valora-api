@@ -33,7 +33,14 @@ public abstract class ApiController : ControllerBase
                 detail: result.Error.Description,
                 type: "https://tools.ietf.org/html/rfc7231#section-6.5.8"
             ),
-            
+
+            ErrorType.Unauthorized => Problem(
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: result.Error.Description,
+                type: "https://tools.ietf.org/html/rfc7235#section-3.1"
+            ),
+
             _ => Problem(
                 statusCode: StatusCodes.Status500InternalServerError,
                 title: "Internal Server Error",
