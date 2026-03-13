@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "valora-api",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "Valora.Api", "--launch-profile", "Valora.Api (HTTP Only)"],
+      "port": 5256
+    },
+    {
+      "name": "mongo-dev",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "compose.dev.yaml", "up"],
+      "port": 27017
+    }
+  ]
+}
